@@ -113,8 +113,11 @@ export default function ProductDetail({
     : product.price_retail;
 
   const baseTotal = activeUnitPrice * quantity;
+  const retailTotal = (product.price_retail || activeUnitPrice) * quantity;
+  const wholesaleSavings = isWholesaleActive && product.price_wholesale ? (retailTotal - baseTotal) : 0;
   const discountAmount = isCouponApplied ? Math.round(baseTotal * 0.1) : 0; // 10% descuento
   const totalPrice = baseTotal - discountAmount;
+  const totalSavings = wholesaleSavings + discountAmount;
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -362,6 +365,34 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
                 </button>
               </div>
 
+              {/* NOTIFICACIÓN VISIBLE DE DESCUENTO MAYORISTA APLICADO */}
+              {isWholesaleActive && (
+                <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-3.5 rounded-2xl flex items-center justify-between gap-3 shadow-md animate-in fade-in duration-200 border-2 border-emerald-400">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-xs font-black tracking-wide">🎉 ¡DESCUENTO MAYORISTA APLICADO!</span>
+                        <span className="bg-white text-emerald-800 text-[10px] font-black px-1.5 py-0.2 rounded-full">
+                          {quantity} unidades
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-emerald-100 font-medium mt-0.5">
+                        El precio bajó a <strong className="text-white font-bold">{formatCOP(product.price_wholesale)} c/u</strong> (Antes {formatCOP(product.price_retail)} al detal)
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 bg-white/15 px-3 py-1.5 rounded-xl border border-white/20">
+                    <span className="text-[9px] uppercase font-bold text-emerald-200 block">Estás Ahorrando:</span>
+                    <span className="text-xs sm:text-sm font-black text-white">
+                      -{formatCOP(wholesaleSavings)}
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* CAJA DE PRECIOS TEMU (DETAL VS MAYORISTA COLOMBIA) */}
               <div className="bg-[#FFF9F2] p-4 rounded-2xl border-2 border-amber-200/80 space-y-2">
                 <div className="flex items-baseline gap-3 flex-wrap">
@@ -373,20 +404,36 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
                       {formatCOP(product.original_price)}
                     </span>
                   )}
-                  <span className="bg-sanvi-red text-white text-[11px] font-black px-2 py-0.5 rounded">
-                    {isWholesaleActive ? '¡Tarifa Mayorista Aplicada!' : 'Precio al Detal (1 unidad)'}
+                  <span className={`text-[11px] font-black px-2 py-0.5 rounded ${
+                    isWholesaleActive
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-sanvi-red text-white'
+                  }`}>
+                    {isWholesaleActive ? '✓ ¡Tarifa Mayorista Activada!' : 'Precio al Detal (1 unidad)'}
                   </span>
                 </div>
 
                 {/* Tarifa Mayorista Destacada */}
                 {product.price_wholesale && (
-                  <div className="flex items-center justify-between bg-amber-200/80 p-2.5 rounded-xl text-xs font-black text-amber-950">
+                  <div className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-black transition-all ${
+                    isWholesaleActive
+                      ? 'bg-emerald-100 text-emerald-950 border border-emerald-300'
+                      : 'bg-amber-200/80 text-amber-950'
+                  }`}>
                     <div className="flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-amber-800" />
-                      <span>Lleva por Mayor a: {formatCOP(product.price_wholesale)} c/u</span>
+                      <Sparkles className={`w-4 h-4 ${isWholesaleActive ? 'text-emerald-700 animate-pulse' : 'text-amber-800'}`} />
+                      <span>
+                        {isWholesaleActive
+                          ? `✓ Tarifa Mayorista Activa: ${formatCOP(product.price_wholesale)} c/u`
+                          : `Lleva por Mayor a: ${formatCOP(product.price_wholesale)} c/u`}
+                      </span>
                     </div>
-                    <span className="text-[11px] bg-white text-amber-900 px-2 py-0.5 rounded-lg shadow-sm">
-                      A partir de {minWholesale} unidades
+                    <span className={`text-[11px] px-2 py-0.5 rounded-lg shadow-sm ${
+                      isWholesaleActive
+                        ? 'bg-emerald-700 text-white font-black'
+                        : 'bg-white text-amber-900'
+                    }`}>
+                      {isWholesaleActive ? `Ahorras ${formatCOP(wholesaleSavings)}` : `A partir de ${minWholesale} unidades`}
                     </span>
                   </div>
                 )}
@@ -505,10 +552,47 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
                 </div>
               </div>
 
-              {/* Total Estimado */}
-              <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl text-xs font-semibold">
-                <span className="text-gray-600">Total a pagar:</span>
-                <span className="text-lg font-black text-gray-950">{formatCOP(totalPrice)}</span>
+              {/* Desglose y Total Estimado con ahorro evidente */}
+              <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-600 font-medium">Subtotal sin descuento ({quantity} uds):</span>
+                  <span className={`font-semibold ${isWholesaleActive ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                    {formatCOP(retailTotal)}
+                  </span>
+                </div>
+
+                {isWholesaleActive && (
+                  <div className="flex items-center justify-between text-xs text-emerald-700 font-bold">
+                    <span className="flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Descuento Mayorista ({quantity} uds):</span>
+                    </span>
+                    <span className="bg-emerald-100 text-emerald-800 text-[11px] font-black px-2 py-0.5 rounded border border-emerald-200">
+                      -{formatCOP(wholesaleSavings)}
+                    </span>
+                  </div>
+                )}
+
+                {isCouponApplied && (
+                  <div className="flex items-center justify-between text-xs text-sanvi-red font-bold">
+                    <span>Cupón de Tienda (-10%):</span>
+                    <span className="bg-red-50 text-sanvi-red text-[11px] font-black px-2 py-0.5 rounded border border-red-200">
+                      -{formatCOP(discountAmount)}
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                  <div>
+                    <span className="text-xs font-black text-gray-900 block">Total a pagar:</span>
+                    {totalSavings > 0 && (
+                      <span className="text-[11px] text-emerald-700 font-extrabold flex items-center gap-1">
+                        🎉 ¡Te ahorraste {formatCOP(totalSavings)}!
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xl sm:text-2xl font-black text-gray-950">{formatCOP(totalPrice)}</span>
+                </div>
               </div>
             </div>
 
