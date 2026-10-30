@@ -47,11 +47,10 @@ export default function MerchantPortal({
   const [copiedLink, setCopiedLink] = useState(false);
 
   const [metrics, setMetrics] = useState({
-    total_views: 5990,
-    total_whatsapp_leads: 432,
-    leads_mayor: 164,
-    leads_detal: 268,
-    estimated_sales_pipeline_cop: '28.080.000 COP'
+    total_views: 0,
+    total_whatsapp_clicks: 0,
+    active_products: 0,
+    conversion_rate: '0.0'
   });
 
   const [membership, setMembership] = useState({
@@ -264,70 +263,69 @@ export default function MerchantPortal({
           </div>
         </div>
 
-        {/* 3. MÉTRICAS TEMU SELLER DASHBOARD (ALTA DENSIDAD Y REALES) */}
+        {/* 3. MÉTRICAS REALES Y VERIFICABLES DE TU LOCAL */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-          {/* Card 1: Leads de WhatsApp */}
+          {/* Card 1: Visitas Reales al Catálogo */}
           <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between text-gray-500 mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Clientes a WhatsApp</span>
-              <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <MessageCircle className="w-3.5 h-3.5" />
-              </div>
-            </div>
-            <div className="text-2xl font-black text-emerald-700 tracking-tight">
-              {metrics.total_whatsapp_leads}
-            </div>
-            <div className="flex items-center gap-1 text-[10px] text-emerald-700 font-bold mt-0.5">
-              <span>▲ +18.4%</span>
-              <span className="text-gray-400 font-normal">frente al mes pasado</span>
-            </div>
-          </div>
-
-          {/* Card 2: Clientes Mayoristas */}
-          <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
-            <div className="flex items-center justify-between text-gray-500 mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Mayoristas B2B</span>
-              <div className="w-6 h-6 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center">
-                <TrendingUp className="w-3.5 h-3.5" />
-              </div>
-            </div>
-            <div className="text-2xl font-black text-amber-900 tracking-tight">
-              {metrics.leads_mayor}
-            </div>
-            <div className="flex items-center gap-1 text-[10px] text-amber-800 font-bold mt-0.5">
-              <span>Pedidos por docena / bulto</span>
-            </div>
-          </div>
-
-          {/* Card 3: Visitas al Catálogo */}
-          <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
-            <div className="flex items-center justify-between text-gray-500 mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Exposición en Sanvi</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider">Visitas al Catálogo</span>
               <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
                 <Eye className="w-3.5 h-3.5" />
               </div>
             </div>
             <div className="text-2xl font-black text-gray-900 tracking-tight">
-              {metrics.total_views}
+              {metrics.total_views || 0}
             </div>
             <div className="flex items-center gap-1 text-[10px] text-gray-500 font-medium mt-0.5">
-              <span>Impresiones en el feed Temu</span>
+              <span>Vistas totales en feed y tienda</span>
             </div>
           </div>
 
-          {/* Card 4: Facturación Estimada */}
+          {/* Card 2: Clics Reales al Botón de WhatsApp */}
           <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between text-gray-500 mb-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider">Ventas Estimadas</span>
-              <span className="text-[10px] font-black bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded">
-                100% Tuyas
-              </span>
+              <span className="text-[11px] font-bold uppercase tracking-wider">Clics a tu WhatsApp</span>
+              <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <MessageCircle className="w-3.5 h-3.5" />
+              </div>
             </div>
-            <div className="text-xl font-black text-gray-950 tracking-tight truncate">
-              {metrics.estimated_sales_pipeline_cop || '$28.0M COP'}
+            <div className="text-2xl font-black text-emerald-700 tracking-tight">
+              {metrics.total_whatsapp_clicks || 0}
+            </div>
+            <div className="flex items-center gap-1 text-[10px] text-emerald-700 font-bold mt-0.5">
+              <span>Personas que abrieron tu chat</span>
+            </div>
+          </div>
+
+          {/* Card 3: Tasa de Interés / Efectividad Real */}
+          <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+            <div className="flex items-center justify-between text-gray-500 mb-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider">Efectividad de Contacto</span>
+              <div className="w-6 h-6 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center">
+                <TrendingUp className="w-3.5 h-3.5" />
+              </div>
+            </div>
+            <div className="text-2xl font-black text-amber-900 tracking-tight">
+              {metrics.conversion_rate || '0.0'}%
+            </div>
+            <div className="flex items-center gap-1 text-[10px] text-amber-800 font-bold mt-0.5">
+              <span>De cada 100 visitas te escriben</span>
+            </div>
+          </div>
+
+          {/* Card 4: Productos Publicados Activos */}
+          <div className="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+            <div className="flex items-center justify-between text-gray-500 mb-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider">Prendas en Venta</span>
+              <div className="w-6 h-6 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+                <Package className="w-3.5 h-3.5" />
+              </div>
+            </div>
+            <div className="text-2xl font-black text-purple-900 tracking-tight">
+              {filteredStoreProducts.length}
             </div>
             <div className="text-[10px] text-gray-500 font-semibold mt-0.5">
-              Retorno sobre membresía: <strong className="text-emerald-600">234x</strong>
+              <span>Artículos visibles a compradores</span>
             </div>
           </div>
         </div>

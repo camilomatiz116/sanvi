@@ -36,9 +36,7 @@ export async function getStoreMetrics(req, res) {
 
   try {
     const leadsRes = await query(
-      `SELECT COUNT(*) as total_leads,
-              COUNT(CASE WHEN purchase_type = 'MAYOR' THEN 1 END) as mayor_leads,
-              COUNT(CASE WHEN purchase_type = 'DETAL' THEN 1 END) as detal_leads
+      `SELECT COUNT(*) as total_clicks
        FROM whatsapp_leads
        WHERE store_id = $1`,
       [storeId]
@@ -52,27 +50,42 @@ export async function getStoreMetrics(req, res) {
       [storeId]
     );
 
+    const productsCountRes = await query(
+      `SELECT COUNT(*) as total_active
+       FROM products
+       WHERE store_id = $1 AND is_active = true`,
+      [storeId]
+    );
+
+    const views = Number(viewsRes.rows[0]?.total_views || 0);
+    const clicks = Math.max(
+      Number(viewsRes.rows[0]?.total_clicks || 0),
+      Number(leadsRes.rows[0]?.total_clicks || 0)
+    );
+    const activeProducts = Number(productsCountRes.rows[0]?.total_active || 0);
+    const conversionRate = views > 0 ? ((clicks / views) * 100).toFixed(1) : '0.0';
+
     return res.json({
-      total_views: Number(viewsRes.rows[0]?.total_views || 0),
-      total_whatsapp_leads: Number(leadsRes.rows[0]?.total_leads || 0),
-      leads_mayor: Number(leadsRes.rows[0]?.mayor_leads || 0),
-      leads_detal: Number(leadsRes.rows[0]?.detal_leads || 0)
+      total_views: views,
+      total_whatsapp_clicks: clicks,
+      active_products: activeProducts,
+      conversion_rate: conversionRate
     });
   } catch (error) {
-    // Generar métricas personalizadas para el comerciante consultado
+    // Modo memoria / fallback con la suma de los productos del comerciante
     const store = MOCK_STORES.find(s => s.id === storeId || s.slug === storeId) || MOCK_STORES[0];
-    const storeProducts = MOCK_PRODUCTS.filter(p => p.store_id === store.id);
-    const totalViews = storeProducts.reduce((sum, p) => sum + (p.views_count || 0), 4150);
-    const totalClicks = storeProducts.reduce((sum, p) => sum + (p.whatsapp_clicks || 0), 320);
+    const storeProducts = MOCK_PRODUCTS.filter(p => p.store_id === store.id || p.store_name === store.name);
+    const totalViews = storeProducts.reduce((sum, p) => sum + (p.views_count || 0), 0);
+    const totalClicks = storeProducts.reduce((sum, p) => sum + (p.whatsapp_clicks || 0), 0);
+    const conversionRate = totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(1) : '0.0';
 
     return res.json({
       store_id: store.id,
       store_name: store.name,
       total_views: totalViews,
-      total_whatsapp_leads: totalClicks,
-      leads_mayor: Math.round(totalClicks * 0.38),
-      leads_detal: Math.round(totalClicks * 0.62),
-      estimated_sales_pipeline_cop: `${new Intl.NumberFormat('es-CO').format(totalClicks * 65000)} COP`
+      total_whatsapp_clicks: totalClicks,
+      active_products: storeProducts.length,
+      conversion_rate: conversionRate
     });
   }
 }
