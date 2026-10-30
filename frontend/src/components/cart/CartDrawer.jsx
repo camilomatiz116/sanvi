@@ -29,7 +29,21 @@ export default function CartDrawer({
 
   if (!isOpen) return null;
 
-  const safeItems = Array.isArray(items) ? items : [];
+  // Respaldo inmediato desde localStorage por si el prop items aún no ha re-renderizado
+  const storedCart = (() => {
+    try {
+      const saved = localStorage.getItem('sanvi_cart');
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  })();
+
+  const safeItems = (Array.isArray(items) && items.length > 0)
+    ? items
+    : storedCart;
 
   const formatCOP = (val) => {
     return new Intl.NumberFormat('es-CO', {
@@ -61,7 +75,7 @@ export default function CartDrawer({
   };
 
   const handleCheckoutWhatsApp = () => {
-    if (items.length === 0) return;
+    if (safeItems.length === 0) return;
 
     // Registrar métrica
     calculatedItems.forEach(item => {

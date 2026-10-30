@@ -197,32 +197,43 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
   };
 
   const handleAddCartItem = () => {
+    const cartItem = {
+      ...product,
+      id: product.id,
+      title: product.title,
+      images: images,
+      selectedSize,
+      selectedColor,
+      quantity,
+      price_retail: activeUnitPrice,
+      unitPrice: activeUnitPrice,
+      isWholesale: isWholesaleActive,
+      total: activeUnitPrice * quantity
+    };
     if (onAddToCart) {
-      onAddToCart({
-        ...product,
-        selectedSize,
-        selectedColor,
-        quantity,
-        price_retail: activeUnitPrice,
-        isWholesale: isWholesaleActive
-      });
+      onAddToCart(cartItem, true);
     }
   };
 
   const handleBuyNow = () => {
     const buyItem = {
       ...product,
+      id: product.id,
+      title: product.title,
+      images: images,
       selectedSize,
       selectedColor,
       quantity,
       price_retail: activeUnitPrice,
-      isWholesale: isWholesaleActive
+      unitPrice: activeUnitPrice,
+      isWholesale: isWholesaleActive,
+      total: activeUnitPrice * quantity
     };
 
     if (onBuyNow) {
       onBuyNow(buyItem);
     } else if (onAddToCart) {
-      onAddToCart(buyItem);
+      onAddToCart(buyItem, true);
     }
   };
 

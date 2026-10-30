@@ -57,11 +57,13 @@ export default function App() {
   // Modo del Modal de Login: 'customer' (Comprador) | 'merchant' (Comerciante)
   const [authModalMode, setAuthModalMode] = useState('customer');
 
-  // Carrito de compras persistente en localStorage
+  // Carrito de compras persistente en localStorage a prueba de fallos
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('sanvi_cart');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
@@ -70,11 +72,15 @@ export default function App() {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [checkoutItems, setCheckoutItems] = useState([]);
 
-  // Sincronizar carrito en localStorage
+  // Sincronizar carrito en localStorage cada vez que cambie el estado
   useEffect(() => {
     try {
-      localStorage.setItem('sanvi_cart', JSON.stringify(cart));
-    } catch {}
+      if (Array.isArray(cart)) {
+        localStorage.setItem('sanvi_cart', JSON.stringify(cart));
+      }
+    } catch (e) {
+      console.error('Error sincronizando sanvi_cart:', e);
+    }
   }, [cart]);
 
   // Modales y selección
@@ -130,23 +136,50 @@ export default function App() {
     }
   }, [activeCategory, activeCenter, searchTerm, currentView]);
 
-  // Manejo de Carrito robusto con cantidades reales
+  // Manejo de Carrito robusto con cantidades reales y sincronización instantánea
   const handleAddToCart = (product, openDrawer = true) => {
     if (!product) return;
-    const qtyToAdd = Number(product.quantity) || 1;
+    const qtyToAdd = Math.max(1, Number(product.quantity) || 1);
+    const unitPrice = Number(product.price_retail || product.unitPrice || product.price || 0);
+
+    const itemToAdd = {
+      ...product,
+      id: product.id || `item-${Date.now()}`,
+      title: product.title || 'Producto San Victorino',
+      quantity: qtyToAdd,
+      price_retail: unitPrice,
+      unitPrice: unitPrice,
+      total: unitPrice * qtyToAdd
+    };
 
     setCart((prev) => {
-      const existingIndex = prev.findIndex((item) => item.id === product.id);
+      const safePrev = Array.isArray(prev) ? prev : [];
+      const existingIndex = safePrev.findIndex((item) => String(item.id) === String(itemToAdd.id));
+      let updated;
       if (existingIndex !== -1) {
-        const updated = [...prev];
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          ...product,
-          quantity: (updated[existingIndex].quantity || 1) + qtyToAdd
-        };
-        return updated;
+        updated = safePrev.map((item, idx) => {
+          if (idx === existingIndex) {
+            const newQty = (Number(item.quantity) || 1) + qtyToAdd;
+            return {
+              ...item,
+              ...itemToAdd,
+              quantity: newQty,
+              total: unitPrice * newQty
+            };
+          }
+          return item;
+        });
+      } else {
+        updated = [...safePrev, itemToAdd];
       }
-      return [...prev, { ...product, quantity: qtyToAdd }];
+
+      // Sincronizar de inmediato con localStorage para evitar cualquier retraso
+      try {
+        localStorage.setItem('sanvi_cart', JSON.stringify(updated));
+      } catch (e) {
+        console.error('Error guardando sanvi_cart:', e);
+      }
+      return updated;
     });
 
     if (openDrawer) {
@@ -157,19 +190,22 @@ export default function App() {
   // Compra directa en plataforma (Botón Comprar Ahora)
   const handleBuyNowDirect = (product) => {
     if (!product) return;
-    const qty = Number(product.quantity) || 1;
-    const unitPrice = Number(product.price_retail || product.unitPrice) || 0;
+    const qty = Math.max(1, Number(product.quantity) || 1);
+    const unitPrice = Number(product.price_retail || product.unitPrice || product.price || 0);
     const itemToBuy = {
       ...product,
+      id: product.id || `item-${Date.now()}`,
+      title: product.title || 'Producto San Victorino',
       quantity: qty,
-      unitPrice,
+      unitPrice: unitPrice,
+      price_retail: unitPrice,
       total: unitPrice * qty
     };
 
-    // Agregar al carrito silenciosamente de respaldo
+    // 1. Agregar y sincronizar en el carrito
     handleAddToCart(itemToBuy, false);
 
-    // Abrir de inmediato el CheckoutModal profesional con el producto seleccionado
+    // 2. Abrir de inmediato el CheckoutModal con el producto seleccionado
     setCheckoutItems([itemToBuy]);
     setIsCartOpen(false);
     setIsCheckoutModalOpen(true);
