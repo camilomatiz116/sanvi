@@ -19,7 +19,8 @@ import {
   Send,
   User,
   Award,
-  AlertCircle
+  AlertCircle,
+  Zap
 } from 'lucide-react';
 import { isApparelOrFootwearCategory } from '../../utils/categoryHelper';
 import { api } from '../../services/api';
@@ -148,6 +149,17 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
       selectedSize,
       selectedColor,
       quantity
+    });
+  };
+
+  const handleBuyNow = () => {
+    onAddToCart({
+      ...product,
+      selectedSize,
+      selectedColor,
+      quantity,
+      price_retail: activeUnitPrice,
+      isWholesale: isWholesaleActive
     });
   };
 
@@ -500,25 +512,40 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
               </div>
             </div>
 
-            {/* BOTONES PRINCIPALES DE ACCIÓN */}
-            <div className="space-y-2 pt-3 border-t border-gray-100">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {/* Botón WhatsApp */}
-                <button
-                  onClick={handleWhatsAppBuy}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 text-xs sm:text-sm"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  <span>Pedir Directo por WhatsApp</span>
-                </button>
+            {/* BOTONES PRINCIPALES DE ACCIÓN (ESTILO TEMU) */}
+            <div className="space-y-2.5 pt-3 border-t border-gray-100">
+              {/* Botón Principal Destacado: COMPRAR AHORA */}
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                className="w-full bg-gradient-to-r from-sanvi-red to-[#FA2C19] hover:from-red-600 hover:to-orange-600 active:scale-[0.99] text-white font-black py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all text-sm sm:text-base cursor-pointer tracking-wide"
+              >
+                <Zap className="w-5 h-5 fill-white text-white animate-pulse" />
+                <span>Comprar Ahora</span>
+                <span className="text-white/80 font-normal text-xs sm:text-sm hidden sm:inline">•</span>
+                <span className="text-white font-extrabold text-xs sm:text-sm hidden sm:inline">{formatCOP(totalPrice)}</span>
+              </button>
 
+              {/* Fila secundaria: Añadir al Carrito + Pedir por WhatsApp */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {/* Botón Carrito */}
                 <button
+                  type="button"
                   onClick={handleAddCartItem}
-                  className="w-full bg-sanvi-orange hover:bg-orange-600 text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 text-xs sm:text-sm"
+                  className="w-full bg-amber-50 hover:bg-amber-100 text-amber-950 border-2 border-amber-300 font-black py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-xs sm:text-sm shadow-sm"
                 >
-                  <ShoppingBag className="w-5 h-5" />
+                  <ShoppingBag className="w-4 h-4 text-sanvi-orange" />
                   <span>Añadir al Carrito</span>
+                </button>
+
+                {/* Botón WhatsApp */}
+                <button
+                  type="button"
+                  onClick={handleWhatsAppBuy}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 text-xs sm:text-sm"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Pedir Directo por WhatsApp</span>
                 </button>
               </div>
 
