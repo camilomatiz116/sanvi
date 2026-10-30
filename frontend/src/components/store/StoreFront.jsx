@@ -111,11 +111,11 @@ export default function StoreFront({
             </div>
           </div>
 
-          {/* Información y Datos del Local: Espacioso, sin montoneras y sin pegar con el banner */}
-          <div className="px-4 sm:px-8 pb-6 pt-2">
-            <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 -mt-12 sm:-mt-14 mb-4">
-              {/* Logo y Nombre */}
-              <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
+          {/* Información y Datos del Local: Layout 2 Columnas estilo Temu Storefront */}
+          <div className="px-4 sm:px-8 pb-6 pt-3">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 -mt-12 sm:-mt-14">
+              {/* Columna Izquierda: Logo y Datos principales del negocio */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left flex-1 min-w-0">
                 {/* Cuadrito del Logo con marco blanco y sombra profesional */}
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-4 border-white shadow-xl overflow-hidden bg-white shrink-0 group ring-1 ring-gray-200">
                   <img src={logoImg} alt={store.name} className="w-full h-full object-cover" />
@@ -131,13 +131,13 @@ export default function StoreFront({
                   )}
                 </div>
 
-                {/* Título y detalles con buen padding superior para que respire */}
-                <div className="space-y-1.5 pt-1 sm:pt-4">
+                {/* Título, dirección y descripción del negocio */}
+                <div className="space-y-1.5 pt-1 sm:pt-3 max-w-xl">
                   <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
                     <h1 className="text-xl sm:text-2xl font-black text-gray-950 tracking-tight">
                       {store.name}
                     </h1>
-                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-md inline-flex items-center gap-1">
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-md inline-flex items-center gap-1 shrink-0">
                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                       Local Verificado
                     </span>
@@ -160,36 +160,38 @@ export default function StoreFront({
                     <span className="text-gray-300">•</span>
                     <span>San Victorino, Bogotá</span>
                   </div>
+
+                  {store.description && (
+                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed pt-1">
+                      {store.description}
+                    </p>
+                  )}
                 </div>
               </div>
-            </div>
 
-            {/* Descripción y resumen con buena separación */}
-            {store.description && (
-              <p className="text-xs sm:text-sm text-gray-600 max-w-3xl leading-relaxed my-3">
-                {store.description}
-              </p>
-            )}
+              {/* Columna Derecha: Tarjetas de Garantías y Servicios (ocupa el espacio de forma limpia) */}
+              <div className="grid grid-cols-2 gap-2 w-full lg:w-auto lg:min-w-[340px] shrink-0 pt-2 lg:pt-0">
+                <div className="p-3 rounded-xl bg-gray-50 border border-gray-200/80 text-center">
+                  <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Catálogo Activo</div>
+                  <div className="text-lg font-black text-gray-950">{storeProducts.length} Artículos</div>
+                </div>
 
-            {/* Métricas y garantías de compra en el local (diseño plano sin cajas toscas) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-gray-100 text-center">
-              <div className="p-2 rounded-xl bg-gray-50/80 border border-gray-100">
-                <div className="text-[10px] text-gray-400 font-bold uppercase">Prendas en Catálogo</div>
-                <div className="text-base sm:text-lg font-black text-gray-900">{storeProducts.length}</div>
-              </div>
-              <div className="p-2 rounded-xl bg-orange-50/50 border border-orange-100/60">
-                <div className="text-[10px] text-gray-400 font-bold uppercase">Venta Mayorista</div>
-                <div className="text-base sm:text-lg font-black text-sanvi-orange">Por Mayor & Detal</div>
-              </div>
-              <div className="p-2 rounded-xl bg-emerald-50/50 border border-emerald-100/60">
-                <div className="text-[10px] text-gray-400 font-bold uppercase">Despachos</div>
-                <div className="text-base sm:text-lg font-black text-emerald-700">Envíos a Colombia</div>
-              </div>
-              <div className="p-2 rounded-xl bg-gray-50/80 border border-gray-100">
-                <div className="text-[10px] text-gray-400 font-bold uppercase">Garantía Sanvi</div>
-                <div className="text-base sm:text-lg font-black text-blue-600 flex items-center justify-center gap-1">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Comercio Oficial</span>
+                <div className="p-3 rounded-xl bg-orange-50/70 border border-orange-200/80 text-center">
+                  <div className="text-[10px] text-orange-700/70 font-bold uppercase tracking-wider">Venta Mayorista</div>
+                  <div className="text-sm sm:text-base font-black text-sanvi-orange">Por Mayor & Detal</div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-center">
+                  <div className="text-[10px] text-emerald-700/70 font-bold uppercase tracking-wider">Cobertura Envíos</div>
+                  <div className="text-sm sm:text-base font-black text-emerald-700">Toda Colombia</div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200/80 text-center">
+                  <div className="text-[10px] text-blue-700/70 font-bold uppercase tracking-wider">Garantía Sanvi</div>
+                  <div className="text-sm sm:text-base font-black text-blue-700 flex items-center justify-center gap-1">
+                    <ShieldCheck className="w-4 h-4 text-blue-600" />
+                    <span>Bodega Oficial</span>
+                  </div>
                 </div>
               </div>
             </div>
