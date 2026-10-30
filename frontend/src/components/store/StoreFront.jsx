@@ -162,24 +162,6 @@ export default function StoreFront({
                   </div>
                 </div>
               </div>
-
-              {/* Botón de Contacto por WhatsApp: Temu e-commerce style (sólido y elegante) */}
-              <div className="w-full sm:w-auto flex flex-col items-center sm:items-end gap-1 shrink-0 pt-2 sm:pt-0">
-                <a
-                  href={`https://wa.me/${store.phone_whatsapp || '573102345678'}?text=${encodeURIComponent(
-                    `Hola ${store.name}, vi su tienda oficial en SANVI y deseo hacer una consulta de su catálogo.`
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full sm:w-auto bg-[#25D366] hover:bg-[#20bd5a] text-white font-black text-xs sm:text-sm px-5 py-2.5 rounded-xl inline-flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all active:scale-95"
-                >
-                  <MessageCircle className="w-4 h-4 fill-white" />
-                  <span>WhatsApp del Local</span>
-                </a>
-                <span className="text-[10px] text-gray-400 font-medium hidden sm:block">
-                  Atención directa sin intermediarios
-                </span>
-              </div>
             </div>
 
             {/* Descripción y resumen con buena separación */}
