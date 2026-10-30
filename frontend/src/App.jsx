@@ -34,6 +34,16 @@ export default function App() {
   const [loggedInStore, setLoggedInStore] = useState(null);
   const [activeStore, setActiveStore] = useState(null);
 
+  // Cliente autenticado (Estilo Temu)
+  const [loggedInCustomer, setLoggedInCustomer] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sanvi_customer');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   // Carrito de compras
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -214,7 +224,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Header Central con Control de Sesión del Comerciante */}
+      {/* Header Central con Control de Sesión del Comerciante y del Cliente */}
       <Header
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -225,12 +235,17 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         loggedInStore={loggedInStore}
+        loggedInCustomer={loggedInCustomer}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         onOpenMerchantPortal={() => setCurrentView('portal')}
         onViewStore={(st) => handleViewStore(st)}
         onLogout={() => {
           setLoggedInStore(null);
           setCurrentView('marketplace');
+        }}
+        onLogoutCustomer={() => {
+          localStorage.removeItem('sanvi_customer');
+          setLoggedInCustomer(null);
         }}
       />
 
@@ -311,6 +326,8 @@ export default function App() {
           onAddToCart={handleAddToCart}
           onOpenVideo={(prod) => setSelectedVideoProduct(prod)}
           onViewStore={(stId) => handleViewStore(stId)}
+          loggedInCustomer={loggedInCustomer}
+          onOpenAuthModal={() => setIsAuthModalOpen(true)}
         />
       )}
 
@@ -362,11 +379,15 @@ export default function App() {
         onClearCart={() => setCart([])}
       />
 
-      {/* Modal: Login / Registro de Comerciantes */}
+      {/* Modal: Login / Registro Temu Style (Clientes y Comerciantes) */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         stores={stores}
+        loggedInCustomer={loggedInCustomer}
+        onLoginCustomer={(cust) => {
+          setLoggedInCustomer(cust);
+        }}
         onLoginSuccess={(store) => {
           setLoggedInStore(store);
           setCurrentView('portal'); // Abre inmediatamente su panel de control

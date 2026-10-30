@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, MessageCircle, Plus, MapPin, Eye, Store } from 'lucide-react';
+import { Play, MessageCircle, Plus, MapPin, Eye, Store, Star, Flame } from 'lucide-react';
 import { isApparelOrFootwearCategory } from '../../utils/categoryHelper';
 
 export default function ProductCard({
@@ -99,6 +99,19 @@ export default function ProductCard({
             <span className="text-gray-300">•</span>
             <span className="text-[10px] text-gray-500 truncate">{product.commercial_center}</span>
           </button>
+
+          {/* Rating y Número de ventas realizadas (Temu Style) */}
+          <div className="flex items-center gap-1.5 text-[11px] pt-1">
+            <div className="flex items-center gap-0.5 text-amber-500 font-extrabold text-[11px]">
+              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+              <span>{product.rating || '4.9'}</span>
+            </div>
+            <span className="text-gray-300">•</span>
+            <span className="text-gray-600 font-bold bg-gray-100 px-1.5 py-0.5 rounded text-[10px] flex items-center gap-1">
+              <Flame className="w-2.5 h-2.5 text-sanvi-red fill-sanvi-red" />
+              +{product.sold_count ? (product.sold_count >= 1000 ? `${(product.sold_count / 1000).toFixed(1)}k` : product.sold_count) : '850'} vendidos
+            </span>
+          </div>
 
           {/* Tallas disponibles en feed (SOLO para Ropa y Calzado) */}
           {isApparelOrFootwearCategory(product.category) && product.variants?.sizes && product.variants.sizes.length > 0 && (

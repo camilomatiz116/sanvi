@@ -18,6 +18,20 @@ export const api = {
     return res.json();
   },
 
+  async getProductReviews(id) {
+    const res = await fetch(`${API_BASE}/products/${id}/reviews`);
+    return res.json();
+  },
+
+  async addProductReview(id, reviewData) {
+    const res = await fetch(`${API_BASE}/products/${id}/reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reviewData)
+    });
+    return res.json();
+  },
+
   async createProduct(productData) {
     const res = await fetch(`${API_BASE}/products`, {
       method: 'POST',

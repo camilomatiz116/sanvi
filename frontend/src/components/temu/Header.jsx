@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, ShoppingBag, Store, Sparkles, LogIn, ExternalLink, LogOut } from 'lucide-react';
+import { Search, ShoppingBag, Store, Sparkles, LogIn, ExternalLink, LogOut, User, CheckCircle2 } from 'lucide-react';
 
 export default function Header({
   searchTerm,
@@ -8,10 +8,12 @@ export default function Header({
   onOpenCart,
   onGoHome,
   loggedInStore,
+  loggedInCustomer,
   onOpenAuthModal,
   onOpenMerchantPortal,
   onViewStore,
-  onLogout
+  onLogout,
+  onLogoutCustomer
 }) {
   return (
     <header className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-100">
@@ -56,53 +58,94 @@ export default function Header({
 
         {/* Acciones principales */}
         <div className="flex items-center gap-2">
+          
+          {/* CUENTA CLIENTE / INICIAR SESIÓN (TAL CUAL TEMU) */}
+          {loggedInCustomer ? (
+            <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 pl-1.5 pr-2 py-1 rounded-full text-xs">
+              <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-300 shrink-0">
+                <img
+                  src={loggedInCustomer.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop'}
+                  alt={loggedInCustomer.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-left hidden sm:block leading-tight">
+                <p className="text-[11px] font-black text-gray-800 truncate max-w-[90px]">
+                  {loggedInCustomer.name?.split(' ')[0]}
+                </p>
+                <p className="text-[9px] text-emerald-700 font-bold">Compra Segura</p>
+              </div>
+              <button
+                type="button"
+                onClick={onLogoutCustomer}
+                className="text-gray-400 hover:text-red-500 p-1 transition-colors"
+                title="Cerrar sesión de comprador"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onOpenAuthModal}
+              className="flex items-center gap-1.5 text-xs font-bold text-gray-800 hover:text-sanvi-orange bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-full transition-all"
+              title="Iniciar sesión en Sanvi"
+            >
+              <User className="w-4 h-4 text-gray-600" />
+              <div className="text-left hidden sm:block leading-tight">
+                <span className="text-[10px] text-gray-400 block -mb-0.5">Iniciar sesión</span>
+                <span className="text-[11px] font-bold">Pedidos y Cuenta</span>
+              </div>
+            </button>
+          )}
+
+          {/* ACCESO AL LOCAL / VENDEDOR (SELLER CENTER SAN VICTORINO) */}
           {loggedInStore ? (
             /* Estado de Comerciante Autenticado */
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
                 onClick={onOpenMerchantPortal}
-                className="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-black px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-sm transition-all"
+                className="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 text-xs font-black px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all"
                 title="Abrir el panel de administración de tu tienda"
               >
-                <Store className="w-4 h-4 text-blue-600" />
-                <span className="hidden sm:inline">{loggedInStore.name}</span>
-                <span className="sm:hidden">Mi Panel</span>
+                <Store className="w-3.5 h-3.5 text-blue-600" />
+                <span className="hidden md:inline truncate max-w-[120px]">{loggedInStore.name}</span>
+                <span className="md:hidden">Mi Local</span>
               </button>
 
               <button
                 onClick={() => onViewStore(loggedInStore)}
-                className="hidden lg:flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold px-2.5 py-2 rounded-xl transition-colors"
+                className="hidden xl:flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold px-2 py-1.5 rounded-xl transition-colors"
                 title="Ver tu tienda pública tal como la ven los clientes"
               >
                 <span>Mi Tienda</span>
-                <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
+                <ExternalLink className="w-3 h-3 text-gray-500" />
               </button>
 
               <button
                 onClick={onLogout}
-                className="text-gray-400 hover:text-red-500 p-2 rounded-lg transition-colors"
+                className="text-gray-400 hover:text-red-500 p-1.5 rounded-lg transition-colors"
                 title="Cerrar sesión del negocio"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-3.5 h-3.5" />
               </button>
             </div>
           ) : (
-            /* Estado Visitante (Botón para Registrar o Iniciar Sesión) */
+            /* Estado Visitante (Botón para Registrar o Iniciar Sesión de Negocio) */
             <button
               onClick={onOpenAuthModal}
-              className="flex items-center gap-1.5 text-xs font-black bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 px-3.5 py-2 rounded-full transition-all shadow-sm"
+              className="hidden lg:flex items-center gap-1.5 text-xs font-black bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 px-3 py-1.5 rounded-full transition-all shadow-sm"
               title="Registra tu negocio o entra a tu panel"
             >
-              <Store className="w-4 h-4 text-sanvi-orange" />
-              <span className="hidden sm:inline">Mi Negocio / Registrar Local ($120k)</span>
-              <span className="sm:hidden">Mi Negocio</span>
+              <Store className="w-3.5 h-3.5 text-sanvi-orange" />
+              <span>Tengo Local ($120k)</span>
             </button>
           )}
 
           {/* Carrito de compras unificado */}
           <button
             onClick={onOpenCart}
-            className="relative bg-gray-100 hover:bg-gray-200 text-gray-800 p-2 rounded-full transition-colors ml-1"
+            className="relative bg-gray-100 hover:bg-gray-200 text-gray-800 p-2 rounded-full transition-colors ml-0.5"
             title="Ver carrito de compras"
           >
             <ShoppingBag className="w-5 h-5 text-gray-700" />
