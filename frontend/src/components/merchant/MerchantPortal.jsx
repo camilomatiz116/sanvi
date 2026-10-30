@@ -543,27 +543,31 @@ export default function MerchantPortal({
           </div>
         </div>
 
-        {/* 5. GESTIÓN OPERATIVA: PESTAÑAS PRINCIPALES DEL VENDEDOR */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-          {/* Header de Pestañas */}
-          <div className="border-b border-gray-200 bg-gray-50/70 px-4 pt-2.5 flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-1">
+        {/* 5. GESTIÓN OPERATIVA: PESTAÑAS PRINCIPALES DEL VENDEDOR (SEGMENTED CONTROL MODERNO) */}
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+          {/* Header de Pestañas Estilo Píldoras Destacadas */}
+          <div className="border-b border-gray-200 bg-gray-50/80 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
+            {/* Contenedor Segmented Control de Pestañas */}
+            <div className="bg-gray-200/80 p-1 rounded-xl flex items-center gap-1 shadow-inner">
               
-              {/* PESTAÑA 1: PEDIDOS Y DESPACHOS (ESTILO TEMU SELLER) */}
+              {/* PESTAÑA 1: PEDIDOS Y DESPACHOS */}
               <button
+                type="button"
                 onClick={() => setActiveTab('orders')}
-                className={`px-3.5 py-2 text-xs font-black border-b-2 transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-2 text-xs font-black rounded-lg transition-all flex items-center gap-2 cursor-pointer ${
                   activeTab === 'orders'
-                    ? 'border-sanvi-orange text-sanvi-orange bg-white rounded-t-lg shadow-sm'
-                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-orange-500 to-[#FA2C19] text-white shadow-md scale-[1.02]'
+                    : 'text-gray-600 hover:text-gray-950 hover:bg-white/60'
                 }`}
               >
-                <Truck className="w-3.5 h-3.5" />
-                <span>📦 Pedidos y Despachos</span>
+                <Truck className={`w-3.5 h-3.5 ${activeTab === 'orders' ? 'text-white' : 'text-gray-500'}`} />
+                <span>Pedidos y Despachos</span>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
-                  pendingOrdersCount > 0
+                  activeTab === 'orders'
+                    ? 'bg-white text-sanvi-red shadow-xs'
+                    : pendingOrdersCount > 0
                     ? 'bg-sanvi-red text-white animate-pulse'
-                    : 'bg-gray-200 text-gray-700'
+                    : 'bg-gray-300 text-gray-800'
                 }`}>
                   {orders.length}
                 </span>
@@ -571,32 +575,42 @@ export default function MerchantPortal({
 
               {/* PESTAÑA 2: MIS ARTÍCULOS EN VENTA */}
               <button
+                type="button"
                 onClick={() => setActiveTab('inventory')}
-                className={`px-3.5 py-2 text-xs font-black border-b-2 transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-2 text-xs font-black rounded-lg transition-all flex items-center gap-2 cursor-pointer ${
                   activeTab === 'inventory'
-                    ? 'border-sanvi-orange text-sanvi-orange bg-white rounded-t-lg shadow-sm'
-                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-orange-500 to-[#FA2C19] text-white shadow-md scale-[1.02]'
+                    : 'text-gray-600 hover:text-gray-950 hover:bg-white/60'
                 }`}
               >
-                <Package className="w-3.5 h-3.5" />
+                <Package className={`w-3.5 h-3.5 ${activeTab === 'inventory' ? 'text-white' : 'text-gray-500'}`} />
                 <span>Mis Artículos en Venta</span>
-                <span className="bg-gray-200 text-gray-700 text-[10px] px-1.5 py-0.2 rounded-full font-bold">
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                  activeTab === 'inventory'
+                    ? 'bg-white text-gray-900 shadow-xs'
+                    : 'bg-gray-300 text-gray-800'
+                }`}>
                   {storeProducts.length}
                 </span>
               </button>
 
               {/* PESTAÑA 3: EN MADRUGÓN */}
               <button
+                type="button"
                 onClick={() => setActiveTab('madrugon')}
-                className={`px-3.5 py-2 text-xs font-black border-b-2 transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-2 text-xs font-black rounded-lg transition-all flex items-center gap-2 cursor-pointer ${
                   activeTab === 'madrugon'
-                    ? 'border-sanvi-orange text-sanvi-orange bg-white rounded-t-lg shadow-sm'
-                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-orange-500 to-[#FA2C19] text-white shadow-md scale-[1.02]'
+                    : 'text-gray-600 hover:text-gray-950 hover:bg-white/60'
                 }`}
               >
-                <Flame className="w-3.5 h-3.5 text-sanvi-red" />
+                <Flame className={`w-3.5 h-3.5 ${activeTab === 'madrugon' ? 'text-yellow-300 fill-yellow-300' : 'text-red-500'}`} />
                 <span>En Madrugón</span>
-                <span className="bg-red-100 text-sanvi-red text-[10px] px-1.5 py-0.2 rounded-full font-bold">
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                  activeTab === 'madrugon'
+                    ? 'bg-yellow-300 text-gray-950 shadow-xs font-black'
+                    : 'bg-red-100 text-sanvi-red'
+                }`}>
                   {storeProducts.filter((p) => p.is_madrugon_deal).length}
                 </span>
               </button>
