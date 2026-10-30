@@ -215,3 +215,27 @@ export async function updateOrderStatus(req, res) {
     return res.status(500).json({ error: err.message });
   }
 }
+
+export async function deleteOrder(req, res) {
+  const { id } = req.params;
+  try {
+    // 1. Eliminar items de la orden por FK
+    await query(`DELETE FROM order_items WHERE order_id = $1`, [id]).catch(() => {});
+
+    // 2. Eliminar la orden en PostgreSQL
+    const deleteRes = await query(
+      `DELETE FROM orders WHERE id = $1 OR order_number = $1 RETURNING *`,
+      [id]
+    );
+
+    // 3. Limpiar también de memoria volátil de respaldo
+    const memIndex = IN_MEMORY_ORDERS.findIndex(o => o.id === id || o.order_number === id);
+    if (memIndex !== -1) {
+      IN_MEMORY_ORDERS.splice(memIndex, 1);
+    }
+
+    return res.json({ message: 'Pedido eliminado correctamente', id });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+}

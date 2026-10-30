@@ -202,6 +202,19 @@ export default function MerchantPortal({
     }
   };
 
+  const handleDeleteOrder = async (orderId, orderNumber) => {
+    if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente el pedido #${orderNumber}?`)) {
+      return;
+    }
+    try {
+      await api.deleteOrder(orderId);
+      setOrders((prev) => prev.filter((o) => o.id !== orderId && o.order_number !== orderId));
+      loadStoreOrders();
+    } catch (err) {
+      alert('Error eliminando el pedido.');
+    }
+  };
+
   // Filtrado de órdenes
   const filteredOrders = orders.filter((o) => {
     if (orderFilter === 'ALL') return true;
@@ -699,6 +712,14 @@ export default function MerchantPortal({
                             <span className="text-[10px] bg-gray-200 text-gray-800 font-bold px-1.5 py-0.5 rounded">
                               {order.payment_method || 'Wompi'} • {order.payment_status === 'PAID' ? '✓ Pagado' : 'Contra Entrega'}
                             </span>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteOrder(order.id, order.order_number)}
+                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors ml-1"
+                              title="Eliminar este pedido"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
 
@@ -825,6 +846,17 @@ export default function MerchantPortal({
                             >
                               <Printer className="w-4 h-4 text-gray-600" />
                               <span>Rótulo de Envío</span>
+                            </button>
+
+                            {/* 3. Botón Borrar Pedido */}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteOrder(order.id, order.order_number)}
+                              className="text-gray-400 hover:text-red-600 hover:bg-red-50 text-xs font-bold px-2.5 py-2 rounded-xl flex items-center gap-1 transition-colors border border-transparent hover:border-red-200"
+                              title="Eliminar orden de la lista"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>Borrar</span>
                             </button>
                           </div>
 

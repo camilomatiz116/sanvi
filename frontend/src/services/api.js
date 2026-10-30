@@ -163,6 +163,13 @@ export const api = {
       body: JSON.stringify(updateData)
     });
     return res.json();
+  },
+
+  async deleteOrder(orderId) {
+    const res = await fetch(`${API_BASE}/orders/${orderId}`, {
+      method: 'DELETE'
+    });
+    return res.json();
   }
 };
 
