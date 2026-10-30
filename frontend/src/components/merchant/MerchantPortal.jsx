@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   CreditCard,
   Building2,
+  Wallet,
   Copy,
   Check,
   Search,
@@ -218,13 +219,22 @@ export default function MerchantPortal({
                 {store.commercial_center} • {store.local_number} • Bogotá, Colombia
               </p>
               {onOpenEditStore && (
-                <button
-                  onClick={onOpenEditStore}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-sanvi-orange hover:text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 px-2.5 py-0.5 rounded-md transition-colors mt-1"
-                >
-                  <Edit className="w-3 h-3" />
-                  <span>Personalizar Portada, Logo & Local</span>
-                </button>
+                <div className="flex items-center gap-2 flex-wrap mt-1">
+                  <button
+                    onClick={onOpenEditStore}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-sanvi-orange hover:text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 px-2.5 py-0.5 rounded-md transition-colors"
+                  >
+                    <Edit className="w-3 h-3" />
+                    <span>Personalizar Portada, Logo & Local</span>
+                  </button>
+                  <button
+                    onClick={onOpenEditStore}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 rounded-md transition-colors"
+                  >
+                    <Wallet className="w-3 h-3 text-emerald-600" />
+                    <span>Pasarelas Colombianas (Nequi, Wompi, Daviplata)</span>
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -326,6 +336,112 @@ export default function MerchantPortal({
             </div>
             <div className="text-[10px] text-gray-500 font-semibold mt-0.5">
               <span>Artículos visibles a compradores</span>
+            </div>
+          </div>
+        </div>
+
+        {/* PASARELAS Y PLATAFORMAS DE COBRO COLOMBIANAS */}
+        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm space-y-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
+                <Wallet className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-xs sm:text-sm font-black text-gray-900 flex items-center gap-2">
+                  <span>Plataformas de Cobro Colombianas de tu Local</span>
+                  <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-1.5 py-0.2 rounded">
+                    0% Comisiones Sanvi
+                  </span>
+                </h3>
+                <p className="text-[11px] text-gray-500 font-medium">
+                  Tus clientes te pagan directamente a tus cuentas sin intermediarios
+                </p>
+              </div>
+            </div>
+
+            {onOpenEditStore && (
+              <button
+                onClick={onOpenEditStore}
+                className="bg-gray-900 hover:bg-black text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all active:scale-95 shadow-xs"
+              >
+                <Edit className="w-3 h-3 text-yellow-400" />
+                <span>Configurar Medios de Pago</span>
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+            {/* Nequi */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-7 h-7 rounded-lg bg-[#20002c] text-[#ff007a] font-black text-xs flex items-center justify-center shrink-0">
+                  N
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-gray-900">Nequi Negocios</p>
+                  <p className="text-[11px] text-gray-600 font-mono font-bold truncate">
+                    {store.nequi_number || store.phone_whatsapp || '3102345678'}
+                  </p>
+                </div>
+              </div>
+              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
+                Activo
+              </span>
+            </div>
+
+            {/* Wompi */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-7 h-7 rounded-lg bg-[#00109b] text-white font-black text-[10px] flex items-center justify-center shrink-0">
+                  W
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-gray-900">Wompi Bancolombia</p>
+                  <p className="text-[11px] text-gray-600 font-mono truncate max-w-[130px]">
+                    {store.wompi_link ? store.wompi_link.replace('https://checkout.wompi.co/l/', '') : 'Link configurado'}
+                  </p>
+                </div>
+              </div>
+              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
+                Activo
+              </span>
+            </div>
+
+            {/* Daviplata */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-7 h-7 rounded-lg bg-[#ed1c24] text-white font-black text-xs flex items-center justify-center shrink-0">
+                  D
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-gray-900">Daviplata</p>
+                  <p className="text-[11px] text-gray-600 font-mono font-bold truncate">
+                    {store.daviplata_number || store.phone_whatsapp || '3102345678'}
+                  </p>
+                </div>
+              </div>
+              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
+                Activo
+              </span>
+            </div>
+
+            {/* Bold / Contra Entrega */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center shrink-0">
+                  📦
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-gray-900">Contra Entrega & Bold</p>
+                  <p className="text-[11px] text-gray-500 font-medium truncate">
+                    {store.bold_link ? 'Bold Activo' : 'Contra Entrega Bogotá'}
+                  </p>
+                </div>
+              </div>
+              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
+                Activo
+              </span>
             </div>
           </div>
         </div>

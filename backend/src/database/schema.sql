@@ -19,6 +19,14 @@ CREATE TABLE IF NOT EXISTS stores (
     logo_url VARCHAR(500),
     banner_url VARCHAR(500),
     description TEXT,
+    -- Pasarelas y Plataformas de Cobro Colombianas del Comerciante
+    nequi_number VARCHAR(30),                -- Línea Nequi / Nequi Negocios
+    nequi_qr_url VARCHAR(500),               -- Código QR de Nequi Negocios
+    daviplata_number VARCHAR(30),            -- Número Daviplata
+    wompi_link VARCHAR(500),                 -- Enlace de pago directo Wompi Bancolombia
+    bold_link VARCHAR(500),                  -- Enlace de cobro datáfono virtual Bold.co
+    bancolombia_account VARCHAR(100),        -- Cuenta ahorros / corriente o Llave Transfiya
+    payment_methods JSONB DEFAULT '{"nequi": true, "daviplata": true, "wompi": true, "bold": true, "contraentrega": true}'::jsonb,
     is_verified BOOLEAN DEFAULT TRUE,        -- Validación de local físico en Bogotá
     status VARCHAR(30) DEFAULT 'ACTIVE',     -- 'ACTIVE', 'PENDIENTE_PAGO', 'SUSPENDIDO'
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

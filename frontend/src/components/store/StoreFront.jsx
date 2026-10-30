@@ -192,6 +192,31 @@ export default function StoreFront({
                 </div>
               </div>
             </div>
+
+            {/* Medios de Pago Directos en este Local */}
+            <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span className="text-[11px] font-bold text-gray-500">
+                💳 Formas de pago directas aceptadas por esta bodega:
+              </span>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="bg-[#20002c]/10 text-[#20002c] border border-[#ff007a]/30 font-black text-[10px] px-2 py-0.5 rounded flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-[#ff007a]" />
+                  Nequi Negocios
+                </span>
+                <span className="bg-blue-50 text-blue-900 border border-blue-200 font-black text-[10px] px-2 py-0.5 rounded flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-blue-600" />
+                  Wompi Bancolombia
+                </span>
+                <span className="bg-red-50 text-red-900 border border-red-200 font-black text-[10px] px-2 py-0.5 rounded flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-red-600" />
+                  Daviplata
+                </span>
+                <span className="bg-emerald-50 text-emerald-900 border border-emerald-200 font-black text-[10px] px-2 py-0.5 rounded flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                  Contra Entrega Bogotá
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 

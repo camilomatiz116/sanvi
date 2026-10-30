@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Trash2, MessageCircle, ShoppingBag, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Trash2, ArrowRight, ShoppingBag, MessageCircle, CreditCard, ShieldCheck, ExternalLink } from 'lucide-react';
 import { api } from '../../services/api';
 
 export default function CartDrawer({
@@ -10,6 +10,8 @@ export default function CartDrawer({
   onRemoveItem,
   onClearCart
 }) {
+  const [paymentMethod, setPaymentMethod] = useState('nequi'); // 'nequi' | 'wompi' | 'daviplata' | 'contraentrega'
+
   if (!isOpen) return null;
 
   const formatCOP = (val) => {
@@ -20,10 +22,10 @@ export default function CartDrawer({
     }).format(val || 0);
   };
 
-  // Calcular totales aplicando tarifa mayorista si cumple cantidad mínima
-  const calculatedItems = items.map(item => {
+  // Calcular totales teniendo en cuenta mayoreo por prenda
+  const calculatedItems = items.map((item) => {
     const isWholesale = item.quantity >= (item.min_wholesale_qty || 6);
-    const unitPrice = isWholesale && item.price_wholesale ? item.price_wholesale : item.price_retail;
+    const unitPrice = isWholesale ? Number(item.price_wholesale) : Number(item.price_retail);
     return {
       ...item,
       isWholesale,
@@ -33,6 +35,13 @@ export default function CartDrawer({
   });
 
   const grandTotal = calculatedItems.reduce((acc, curr) => acc + curr.total, 0);
+
+  const paymentLabels = {
+    nequi: '🟣 Nequi / Nequi Negocios',
+    wompi: '🔵 Wompi Bancolombia (Tarjetas y Botón Bancolombia)',
+    daviplata: '🔴 Daviplata',
+    contraentrega: '📦 Pago Contra Entrega (Bogotá)'
+  };
 
   const handleCheckoutWhatsApp = () => {
     if (items.length === 0) return;
@@ -57,13 +66,15 @@ export default function CartDrawer({
     });
     msg += `----------------------------------------\n`;
     msg += `💰 *TOTAL A PAGAR: ${formatCOP(grandTotal)}*\n`;
+    msg += `💳 *MEDIO DE PAGO ELEGIDO:* ${paymentLabels[paymentMethod] || 'Nequi'}\n`;
     msg += `📍 Deseo coordinar entrega el mismo día en Bogotá / Envío Nacional.\n`;
 
     const encoded = encodeURIComponent(msg);
-    // WhatsApp del primer comerciante o número central de despacho de Sanvi
     const targetPhone = items[0]?.phone_whatsapp || '573105551234';
     window.open(`https://wa.me/${targetPhone}?text=${encoded}`, '_blank');
   };
+
+  const primaryStoreWompiLink = items[0]?.wompi_link;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
@@ -73,20 +84,36 @@ export default function CartDrawer({
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-sanvi-orange" />
             <h3 className="font-black text-sm sm:text-base">Mi Carrito Sanvi</h3>
-            <span className="bg-sanvi-orange text-white text-[11px] font-black px-2 py-0.5 rounded-full">
-              {items.length} prendas
+            <span className="bg-sanvi-orange text-white text-xs font-black px-2 py-0.5 rounded-full">
+              {items.reduce((s, i) => s + i.quantity, 0)} uds
             </span>
           </div>
-          <button onClick={onClose} className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors">
-            <X className="w-5 h-5" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            {items.length > 0 && (
+              <button
+                onClick={onClearCart}
+                className="text-xs text-gray-400 hover:text-white transition-colors"
+              >
+                Vaciar
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white p-1 rounded-lg"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Lista de productos */}
+        {/* Lista de Productos en el Carrito */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {items.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center text-gray-400 space-y-3">
-              <ShoppingBag className="w-12 h-12 text-gray-300" />
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-2 p-6">
+              <div className="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center text-sanvi-orange mb-2">
+                <ShoppingBag className="w-8 h-8" />
+              </div>
               <p className="text-sm font-bold text-gray-500">Tu carrito está vacío</p>
               <p className="text-xs text-gray-400 max-w-xs">
                 Añade buzos, jeans y chaquetas de los locales de San Victorino con precios directos de fábrica.
@@ -114,7 +141,7 @@ export default function CartDrawer({
                       </div>
                       {item.isWholesale && (
                         <span className="text-[9px] bg-amber-200 text-amber-900 px-1 py-0.2 rounded font-black">
-                          ¡Tarifa Mayorista Aplicada!
+                          ¡Tarifa Mayorista!
                         </span>
                       )}
                     </div>
@@ -149,10 +176,84 @@ export default function CartDrawer({
           )}
         </div>
 
-        {/* Footer con Total y Cierre en WhatsApp */}
+        {/* Footer con Medios de Pago Colombianos y Confirmación */}
         {items.length > 0 && (
           <div className="p-4 bg-gray-50 border-t border-gray-200 space-y-3">
-            <div className="space-y-1">
+            
+            {/* Selector de Plataformas de Pago Colombianas */}
+            <div className="space-y-1.5">
+              <label className="block text-[11px] font-black text-gray-700 uppercase tracking-wide">
+                Medio de pago con el fabricante:
+              </label>
+              <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                {/* Nequi */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('nequi')}
+                  className={`p-2 rounded-lg border text-left transition-all flex items-center gap-1.5 ${
+                    paymentMethod === 'nequi'
+                      ? 'bg-[#20002c]/5 border-[#ff007a] text-[#20002c] font-black ring-1 ring-[#ff007a]'
+                      : 'bg-white border-gray-200 text-gray-700 font-medium'
+                  }`}
+                >
+                  <span className="w-5 h-5 rounded bg-[#20002c] text-[#ff007a] text-[10px] font-black flex items-center justify-center shrink-0">
+                    N
+                  </span>
+                  <span className="truncate">Nequi Negocios</span>
+                </button>
+
+                {/* Wompi */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('wompi')}
+                  className={`p-2 rounded-lg border text-left transition-all flex items-center gap-1.5 ${
+                    paymentMethod === 'wompi'
+                      ? 'bg-blue-50 border-blue-600 text-blue-900 font-black ring-1 ring-blue-600'
+                      : 'bg-white border-gray-200 text-gray-700 font-medium'
+                  }`}
+                >
+                  <span className="w-5 h-5 rounded bg-[#00109b] text-white text-[9px] font-black flex items-center justify-center shrink-0">
+                    W
+                  </span>
+                  <span className="truncate">Wompi / Tarjetas</span>
+                </button>
+
+                {/* Daviplata */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('daviplata')}
+                  className={`p-2 rounded-lg border text-left transition-all flex items-center gap-1.5 ${
+                    paymentMethod === 'daviplata'
+                      ? 'bg-red-50 border-red-500 text-red-900 font-black ring-1 ring-red-500'
+                      : 'bg-white border-gray-200 text-gray-700 font-medium'
+                  }`}
+                >
+                  <span className="w-5 h-5 rounded bg-[#ed1c24] text-white text-[10px] font-black flex items-center justify-center shrink-0">
+                    D
+                  </span>
+                  <span className="truncate">Daviplata</span>
+                </button>
+
+                {/* Contra Entrega */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('contraentrega')}
+                  className={`p-2 rounded-lg border text-left transition-all flex items-center gap-1.5 ${
+                    paymentMethod === 'contraentrega'
+                      ? 'bg-emerald-50 border-emerald-600 text-emerald-900 font-black ring-1 ring-emerald-600'
+                      : 'bg-white border-gray-200 text-gray-700 font-medium'
+                  }`}
+                >
+                  <span className="w-5 h-5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-black flex items-center justify-center shrink-0">
+                    📦
+                  </span>
+                  <span className="truncate">Contra Entrega</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Totales */}
+            <div className="space-y-1 pt-1 border-t border-gray-200">
               <div className="flex items-center justify-between text-xs text-gray-600">
                 <span>Subtotal prendas:</span>
                 <span>{formatCOP(grandTotal)}</span>
@@ -167,6 +268,21 @@ export default function CartDrawer({
               </div>
             </div>
 
+            {/* Botón Wompi Directo si está seleccionado y configurado */}
+            {paymentMethod === 'wompi' && primaryStoreWompiLink && (
+              <a
+                href={primaryStoreWompiLink}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full bg-[#00109b] hover:bg-blue-900 text-white font-black py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm text-xs transition-all active:scale-95"
+              >
+                <CreditCard className="w-4 h-4 text-yellow-400" />
+                <span>Pagar en Línea con Wompi Bancolombia</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+
+            {/* Botón WhatsApp */}
             <button
               onClick={handleCheckoutWhatsApp}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 text-xs sm:text-sm"
@@ -181,4 +297,3 @@ export default function CartDrawer({
     </div>
   );
 }
-

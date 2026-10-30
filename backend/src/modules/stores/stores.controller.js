@@ -19,6 +19,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop',
     description: 'Fabricantes directos de Jeans colombianos rígidos, levanta cola y chaquetas denim.',
+    nequi_number: '3102345678',
+    daviplata_number: '3102345678',
+    wompi_link: 'https://checkout.wompi.co/l/don-lucho-denim',
+    bold_link: 'https://link.bold.co/don-lucho-denim',
+    bancolombia_account: 'Ahorros 245-891023-45 (Luis Gómez)',
+    payment_methods: { nequi: true, daviplata: true, wompi: true, bold: true, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -41,6 +47,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&auto=format&fit=crop',
     description: 'Importadores directos de Smartwatches, aros de luz, parlantes Bluetooth, audífonos TWS y cables para celular.',
+    nequi_number: '3118901234',
+    daviplata_number: '3118901234',
+    wompi_link: 'https://checkout.wompi.co/l/tecnomayoristas',
+    bold_link: 'https://link.bold.co/tecnomayoristas',
+    bancolombia_account: 'Ahorros 102-394857-12',
+    payment_methods: { nequi: true, daviplata: true, wompi: true, bold: true, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -63,6 +75,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1200&auto=format&fit=crop',
     description: 'Juguetería por bulto y docena: carros a control remoto, bloques didácticos, muñecas y piñatería para revendedores.',
+    nequi_number: '3134567890',
+    daviplata_number: '3134567890',
+    wompi_link: 'https://checkout.wompi.co/l/mundojuguetes',
+    bold_link: '',
+    bancolombia_account: '',
+    payment_methods: { nequi: true, daviplata: true, wompi: true, bold: false, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -85,6 +103,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200&auto=format&fit=crop',
     description: 'Distribución mayorista de maquillaje, planchas de titanio, kits de brochas, labiales y productos skincare.',
+    nequi_number: '3167890123',
+    daviplata_number: '3167890123',
+    wompi_link: 'https://checkout.wompi.co/l/glam-bogota',
+    bold_link: 'https://link.bold.co/glam-bogota',
+    bancolombia_account: '',
+    payment_methods: { nequi: true, daviplata: true, wompi: true, bold: true, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -107,6 +131,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1200&auto=format&fit=crop',
     description: 'Artículos virales de TikTok para el hogar: picatodo eléctrico, lámparas astronauta galaxia, cobijas térmicas y organizadores.',
+    nequi_number: '3145678901',
+    daviplata_number: '3145678901',
+    wompi_link: '',
+    bold_link: 'https://link.bold.co/el-triunfo',
+    bancolombia_account: 'Ahorros 504-291847-88',
+    payment_methods: { nequi: true, daviplata: true, wompi: false, bold: true, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -129,6 +159,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1546938576-6e6a64f317cc?w=1200&auto=format&fit=crop',
     description: 'Morrales impermeables para portátil con puerto USB, maletas de viaje rígidas y bolsos manos libres.',
+    nequi_number: '3178901234',
+    daviplata_number: '3178901234',
+    wompi_link: 'https://checkout.wompi.co/l/morrales-elite',
+    bold_link: '',
+    bancolombia_account: '',
+    payment_methods: { nequi: true, daviplata: true, wompi: true, bold: false, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -151,6 +187,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=1200&auto=format&fit=crop',
     description: 'Buzos hoodie oversize, camisetas acid wash 240g y estilo streetwear con precios de madrugón.',
+    nequi_number: '3209876543',
+    daviplata_number: '3209876543',
+    wompi_link: 'https://checkout.wompi.co/l/urban-neos',
+    bold_link: 'https://link.bold.co/urban-neos',
+    bancolombia_account: 'Ahorros 882-901823-11',
+    payment_methods: { nequi: true, daviplata: true, wompi: true, bold: true, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -173,6 +215,12 @@ export const MOCK_STORES = [
     logo_url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&auto=format&fit=crop',
     banner_url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&auto=format&fit=crop',
     description: 'Botas 100% cuero legítimo de Restrepo/San Victorino y tenis deportivos tipo exportación.',
+    nequi_number: '3004443322',
+    daviplata_number: '3004443322',
+    wompi_link: '',
+    bold_link: 'https://link.bold.co/cuero-rivas',
+    bancolombia_account: 'Corriente 110-384950-20',
+    payment_methods: { nequi: true, daviplata: true, wompi: false, bold: true, contraentrega: true },
     is_verified: true,
     status: 'ACTIVE',
     membership_status: 'ACTIVE',
@@ -247,10 +295,10 @@ export async function createStore(req, res) {
 
   try {
     const storeRes = await query(
-      `INSERT INTO stores (name, slug, owner_name, email, password_hash, commercial_center, local_number, phone_whatsapp, description)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `INSERT INTO stores (name, slug, owner_name, email, password_hash, commercial_center, local_number, phone_whatsapp, description, nequi_number, daviplata_number)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
        RETURNING *`,
-      [name, slug, owner_name || name, email, password || 'Sanvi2026*', commercial_center, local_number, phone_whatsapp, description || '']
+      [name, slug, owner_name || name, email, password || 'Sanvi2026*', commercial_center, local_number, phone_whatsapp, description || '', phone_whatsapp, phone_whatsapp]
     );
 
     const store = storeRes.rows[0];
@@ -279,6 +327,12 @@ export async function createStore(req, res) {
       local_number,
       phone_whatsapp,
       description,
+      nequi_number: phone_whatsapp,
+      daviplata_number: phone_whatsapp,
+      wompi_link: '',
+      bold_link: '',
+      bancolombia_account: '',
+      payment_methods: { nequi: true, daviplata: true, wompi: false, bold: false, contraentrega: true },
       is_verified: true,
       status: 'ACTIVE',
       membership_status: 'ACTIVE',
@@ -302,7 +356,14 @@ export async function updateStore(req, res) {
     logo_url,
     commercial_center,
     local_number,
-    phone_whatsapp
+    phone_whatsapp,
+    nequi_number,
+    nequi_qr_url,
+    daviplata_number,
+    wompi_link,
+    bold_link,
+    bancolombia_account,
+    payment_methods
   } = req.body;
 
   try {
@@ -315,8 +376,15 @@ export async function updateStore(req, res) {
         commercial_center = COALESCE($5, commercial_center),
         local_number = COALESCE($6, local_number),
         phone_whatsapp = COALESCE($7, phone_whatsapp),
+        nequi_number = COALESCE($8, nequi_number),
+        nequi_qr_url = COALESCE($9, nequi_qr_url),
+        daviplata_number = COALESCE($10, daviplata_number),
+        wompi_link = COALESCE($11, wompi_link),
+        bold_link = COALESCE($12, bold_link),
+        bancolombia_account = COALESCE($13, bancolombia_account),
+        payment_methods = COALESCE($14, payment_methods),
         updated_at = CURRENT_TIMESTAMP
-       WHERE id = $8
+       WHERE id = $15
        RETURNING *`,
       [
         name,
@@ -326,6 +394,13 @@ export async function updateStore(req, res) {
         commercial_center,
         local_number,
         phone_whatsapp,
+        nequi_number,
+        nequi_qr_url,
+        daviplata_number,
+        wompi_link,
+        bold_link,
+        bancolombia_account,
+        payment_methods ? JSON.stringify(payment_methods) : null,
         id
       ]
     );
@@ -340,11 +415,18 @@ export async function updateStore(req, res) {
         ...(logo_url && { logo_url }),
         ...(commercial_center && { commercial_center }),
         ...(local_number && { local_number }),
-        ...(phone_whatsapp && { phone_whatsapp })
+        ...(phone_whatsapp && { phone_whatsapp }),
+        ...(nequi_number !== undefined && { nequi_number }),
+        ...(nequi_qr_url !== undefined && { nequi_qr_url }),
+        ...(daviplata_number !== undefined && { daviplata_number }),
+        ...(wompi_link !== undefined && { wompi_link }),
+        ...(bold_link !== undefined && { bold_link }),
+        ...(bancolombia_account !== undefined && { bancolombia_account }),
+        ...(payment_methods !== undefined && { payment_methods })
       };
       return res.json({
-        message: '¡Datos y portada de la tienda actualizados con éxito!',
-        store: MOCK_STORES[mockIndex]
+        message: '¡Datos y pasarelas colombianas de la tienda actualizados con éxito!',
+        store: result.rows[0] || MOCK_STORES[mockIndex]
       });
     }
 
@@ -353,7 +435,7 @@ export async function updateStore(req, res) {
     }
 
     return res.json({
-      message: '¡Datos y portada de la tienda actualizados con éxito!',
+      message: '¡Datos y pasarelas colombianas de la tienda actualizados con éxito!',
       store: result.rows[0]
     });
   } catch (error) {
@@ -367,13 +449,20 @@ export async function updateStore(req, res) {
         ...(logo_url && { logo_url }),
         ...(commercial_center && { commercial_center }),
         ...(local_number && { local_number }),
-        ...(phone_whatsapp && { phone_whatsapp })
+        ...(phone_whatsapp && { phone_whatsapp }),
+        ...(nequi_number !== undefined && { nequi_number }),
+        ...(nequi_qr_url !== undefined && { nequi_qr_url }),
+        ...(daviplata_number !== undefined && { daviplata_number }),
+        ...(wompi_link !== undefined && { wompi_link }),
+        ...(bold_link !== undefined && { bold_link }),
+        ...(bancolombia_account !== undefined && { bancolombia_account }),
+        ...(payment_methods !== undefined && { payment_methods })
       };
       return res.json({
-        message: '¡Datos y portada de la tienda actualizados con éxito!',
+        message: '¡Datos y pasarelas de pago actualizados (local)!',
         store: MOCK_STORES[mockIndex]
       });
     }
-    return res.status(404).json({ error: 'Tienda no encontrada' });
+    return res.status(500).json({ error: 'Error actualizando tienda: ' + error.message });
   }
 }
