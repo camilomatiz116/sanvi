@@ -226,40 +226,40 @@ export default function MerchantPortal({
 
   return (
     <div className="min-h-screen bg-[#F4F4F6] pb-24 text-gray-900">
-      {/* 1. BARRA SUPERIOR DE CONTROL OPERATIVO */}
-      <div className="bg-gray-950 text-white sticky top-14 z-30 px-3 sm:px-4 py-2.5 shadow-md border-b border-gray-800">
+      {/* 1. BARRA SUPERIOR DE CONTROL OPERATIVO - ESTILO NARANJA SANVI */}
+      <div className="bg-gradient-to-r from-[#FF5000] via-[#FA2C19] to-[#E63900] text-white sticky top-14 z-30 px-3 sm:px-4 py-2.5 shadow-md border-b border-orange-600/30">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-2">
             <button
               onClick={onBackToMarketplace}
-              className="text-gray-400 hover:text-white text-xs font-bold flex items-center gap-1 bg-gray-900 px-2.5 py-1.5 rounded-lg border border-gray-800 transition-colors"
+              className="text-white hover:bg-white/20 text-xs font-bold flex items-center gap-1 bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/20 transition-all backdrop-blur-xs shadow-xs"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Comprar en Sanvi</span>
             </button>
 
-            <span className="bg-sanvi-orange text-white text-[10px] font-black px-2 py-0.5 rounded tracking-wide uppercase">
+            <span className="bg-white text-sanvi-orange text-[10px] font-black px-2 py-0.5 rounded tracking-wide uppercase shadow-xs">
               Seller Center
             </span>
 
-            <span className="text-xs sm:text-sm font-black text-gray-200 truncate max-w-[200px] sm:max-w-xs">
-              {store.name} <span className="text-gray-500 text-xs font-normal">({store.local_number})</span>
+            <span className="text-xs sm:text-sm font-black text-white truncate max-w-[200px] sm:max-w-xs">
+              {store.name} <span className="text-orange-100 text-xs font-normal">({store.local_number})</span>
             </span>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopyStoreUrl}
-              className="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-gray-700 flex items-center gap-1.5 transition-all shadow-xs"
+              className="bg-white/15 hover:bg-white/25 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg border border-white/20 flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-xs"
               title="Copiar enlace directo a tu catálogo de San Victorino"
             >
-              {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
               <span className="hidden sm:inline">{copiedLink ? '¡Enlace Copiado!' : 'Link de Tienda'}</span>
             </button>
 
             <button
               onClick={() => onOpenEditStore('profile')}
-              className="bg-gray-800 hover:bg-gray-700 text-yellow-400 border border-gray-700 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs"
+              className="bg-white/15 hover:bg-white/25 text-amber-200 border border-white/20 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-xs"
               title="Cambiar la foto de portada (banner), el logo y los datos del local"
             >
               <Camera className="w-3.5 h-3.5" />
@@ -268,18 +268,18 @@ export default function MerchantPortal({
 
             <button
               onClick={() => onViewPublicStore(store)}
-              className="bg-white hover:bg-gray-100 text-gray-900 text-xs font-black px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm transition-all"
+              className="bg-white/20 hover:bg-white/30 text-white text-xs font-black px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-white/30 transition-all shadow-xs"
               title="Ver tu tienda exactamente como la ven los clientes en Sanvi"
             >
-              <Eye className="w-3.5 h-3.5 text-sanvi-orange" />
+              <Eye className="w-3.5 h-3.5 text-white" />
               <span className="hidden sm:inline">Ver Tienda Pública</span>
             </button>
 
             <button
               onClick={onOpenCreateProduct}
-              className="bg-gradient-to-r from-sanvi-orange to-[#FA2C19] hover:from-orange-600 hover:to-red-600 text-white text-xs font-black px-3.5 py-1.5 rounded-lg shadow-md transition-all flex items-center gap-1.5 active:scale-95"
+              className="bg-white hover:bg-orange-50 text-sanvi-orange text-xs font-black px-3.5 py-1.5 rounded-lg shadow-md transition-all flex items-center gap-1.5 active:scale-95"
             >
-              <Plus className="w-3.5 h-3.5 stroke-[3]" />
+              <Plus className="w-3.5 h-3.5 stroke-[3] text-sanvi-orange" />
               <span>Publicar Prenda</span>
             </button>
           </div>
@@ -347,7 +347,7 @@ export default function MerchantPortal({
             <button
               onClick={handleRenewPayment}
               disabled={renewing}
-              className="bg-gray-900 hover:bg-black text-white text-[11px] font-black px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all active:scale-95"
+              className="bg-sanvi-orange hover:bg-orange-600 text-white text-[11px] font-black px-3.5 py-1.5 rounded-lg flex items-center gap-1 transition-all active:scale-95 shadow-xs"
             >
               {renewed ? (
                 <>
@@ -454,106 +454,182 @@ export default function MerchantPortal({
           </div>
         </div>
 
-        {/* 4. PLATAFORMAS DE COBRO COLOMBIANAS */}
-        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-3">
+        {/* 4. PLATAFORMAS DE COBRO COLOMBIANAS (ESTADOS 100% REALES) */}
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200/90 shadow-xs space-y-3.5">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
               <div className="flex items-center gap-2">
                 <Wallet className="w-4 h-4 text-sanvi-orange" />
                 <h3 className="text-sm sm:text-base font-black text-gray-900">
-                  Plataformas de Cobro Colombianas de tu Local
+                  Pasarelas y Métodos de Cobro de tu Negocio
                 </h3>
                 <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
                   0% Comisiones Sanvi
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-0.5">
-                Tus clientes te pagan directamente a tus cuentas sin intermediarios.
+                Los clientes te pagan directamente a tus cuentas sin intermediarios ni retenciones.
               </p>
             </div>
 
             <button
+              type="button"
               onClick={() => onOpenEditStore('payments')}
-              className="bg-gray-900 hover:bg-black text-white text-xs font-black px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs"
+              className="bg-sanvi-orange hover:bg-orange-600 text-white text-xs font-black px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
             >
               <CreditCard className="w-3.5 h-3.5 text-yellow-400" />
               <span>Configurar Medios de Pago</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
-            {/* Nequi */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="w-7 h-7 rounded-lg bg-[#20002c] text-[#ff007a] font-black text-xs flex items-center justify-center shrink-0">
-                  N
-                </span>
-                <div className="min-w-0">
-                  <p className="text-xs font-bold text-gray-900">Nequi Negocios</p>
-                  <p className="text-[11px] text-gray-500 font-medium truncate">
-                    {store.nequi_number || store.phone_whatsapp || '3102345678'}
-                  </p>
-                </div>
-              </div>
-              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
-                Activo
-              </span>
-            </div>
+          {/* Tarjetas de Medios de Pago con Detección Real de Configuración */}
+          {(() => {
+            const hasNequi = Boolean(store.nequi_number && store.payment_methods?.nequi !== false);
+            const hasWompi = Boolean((store.wompi_public_key || store.wompi_link) && store.payment_methods?.wompi !== false);
+            const hasDaviplata = Boolean(store.daviplata_number && store.payment_methods?.daviplata !== false);
+            const hasBold = Boolean(store.bold_link && store.payment_methods?.bold !== false);
+            const hasBancolombia = Boolean(store.bancolombia_account && store.payment_methods?.bancolombia !== false);
+            const hasContraentrega = store.payment_methods?.contraentrega !== false;
 
-            {/* Wompi */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="w-7 h-7 rounded-lg bg-[#00109b] text-white font-black text-xs flex items-center justify-center shrink-0">
-                  W
-                </span>
-                <div className="min-w-0">
-                  <p className="text-xs font-bold text-gray-900">Wompi Bancolombia</p>
-                  <p className="text-[11px] text-gray-500 font-medium truncate">
-                    {store.wompi_public_key ? 'Llave vinculada' : store.wompi_link ? 'Link configurado' : 'Wompi Activo'}
-                  </p>
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 pt-1">
+                {/* 1. Nequi */}
+                <div 
+                  onClick={() => onOpenEditStore('payments')}
+                  className={`border rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer ${
+                    hasNequi
+                      ? 'bg-purple-50/40 border-purple-200 hover:border-purple-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300 opacity-75'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-7 h-7 rounded-lg bg-[#20002c] text-[#ff007a] font-black text-xs flex items-center justify-center shrink-0">
+                      N
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-gray-900">Nequi Negocios</p>
+                      <p className="text-[11px] text-gray-500 font-medium truncate">
+                        {hasNequi ? store.nequi_number : 'Sin configurar'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${
+                    hasNequi ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {hasNequi ? '✓ Activo' : 'Inactivo'}
+                  </span>
                 </div>
-              </div>
-              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
-                Activo
-              </span>
-            </div>
 
-            {/* Daviplata */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="w-7 h-7 rounded-lg bg-[#ed1c24] text-white font-black text-xs flex items-center justify-center shrink-0">
-                  D
-                </span>
-                <div className="min-w-0">
-                  <p className="text-xs font-bold text-gray-900">Daviplata</p>
-                  <p className="text-[11px] text-gray-500 font-medium truncate">
-                    {store.daviplata_number || store.phone_whatsapp || '3102345678'}
-                  </p>
+                {/* 2. Wompi Bancolombia */}
+                <div 
+                  onClick={() => onOpenEditStore('payments')}
+                  className={`border rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer ${
+                    hasWompi
+                      ? 'bg-blue-50/40 border-blue-200 hover:border-blue-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300 opacity-75'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-7 h-7 rounded-lg bg-[#00109b] text-white font-black text-xs flex items-center justify-center shrink-0">
+                      W
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-gray-900">Wompi (Tarjetas)</p>
+                      <p className="text-[11px] text-gray-500 font-medium truncate">
+                        {hasWompi ? 'Llave vinculada' : 'Sin configurar'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${
+                    hasWompi ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {hasWompi ? '✓ Activo' : 'Inactivo'}
+                  </span>
                 </div>
-              </div>
-              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
-                Activo
-              </span>
-            </div>
 
-            {/* Contra Entrega */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center shrink-0">
-                  📦
-                </span>
-                <div className="min-w-0">
-                  <p className="text-xs font-bold text-gray-900">Contra Entrega & Bold</p>
-                  <p className="text-[11px] text-gray-500 font-medium truncate">
-                    Contra Entrega Bogotá
-                  </p>
+                {/* 3. Daviplata */}
+                <div 
+                  onClick={() => onOpenEditStore('payments')}
+                  className={`border rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer ${
+                    hasDaviplata
+                      ? 'bg-red-50/40 border-red-200 hover:border-red-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300 opacity-75'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-7 h-7 rounded-lg bg-[#ed1c24] text-white font-black text-xs flex items-center justify-center shrink-0">
+                      D
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-gray-900">Daviplata</p>
+                      <p className="text-[11px] text-gray-500 font-medium truncate">
+                        {hasDaviplata ? store.daviplata_number : 'Sin configurar'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${
+                    hasDaviplata ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {hasDaviplata ? '✓ Activo' : 'Inactivo'}
+                  </span>
+                </div>
+
+                {/* 4. Bold.co */}
+                <div 
+                  onClick={() => onOpenEditStore('payments')}
+                  className={`border rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer ${
+                    hasBold
+                      ? 'bg-slate-50 border-slate-300 hover:border-slate-400'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300 opacity-75'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-7 h-7 rounded-lg bg-black text-white font-black text-[10px] flex items-center justify-center shrink-0">
+                      Bold
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-gray-900">Bold Datáfono</p>
+                      <p className="text-[11px] text-gray-500 font-medium truncate">
+                        {hasBold ? 'Link vinculado' : 'Sin configurar'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${
+                    hasBold ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {hasBold ? '✓ Activo' : 'Inactivo'}
+                  </span>
+                </div>
+
+                {/* 5. Contra Entrega */}
+                <div 
+                  onClick={() => onOpenEditStore('payments')}
+                  className={`border rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer ${
+                    hasContraentrega
+                      ? 'bg-emerald-50/40 border-emerald-200 hover:border-emerald-300'
+                      : 'bg-gray-50 border-gray-200 hover:border-gray-300 opacity-75'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center shrink-0">
+                      📦
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-gray-900">Contra Entrega</p>
+                      <p className="text-[11px] text-gray-500 font-medium truncate">
+                        {hasContraentrega ? 'Entrega Bogotá' : 'Deshabilitado'}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${
+                    hasContraentrega ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {hasContraentrega ? '✓ Activo' : 'Inactivo'}
+                  </span>
                 </div>
               </div>
-              <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.5 rounded">
-                Activo
-              </span>
-            </div>
-          </div>
+            );
+          })()}
         </div>
 
         {/* 5. GESTIÓN OPERATIVA: PESTAÑAS PRINCIPALES DEL VENDEDOR (SEGMENTED CONTROL MODERNO) */}
@@ -635,7 +711,7 @@ export default function MerchantPortal({
                 <button
                   onClick={() => setOrderFilter('ALL')}
                   className={`text-[11px] font-bold px-2.5 py-1 rounded-md transition-colors ${
-                    orderFilter === 'ALL' ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-200'
+                    orderFilter === 'ALL' ? 'bg-sanvi-orange text-white' : 'text-gray-600 hover:bg-gray-200'
                   }`}
                 >
                   Todos ({orders.length})

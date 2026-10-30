@@ -105,10 +105,11 @@ export default function EditStoreModal({
   const [boldLink, setBoldLink] = useState('');
   const [bancolombiaAccount, setBancolombiaAccount] = useState('');
   const [paymentMethods, setPaymentMethods] = useState({
-    nequi: true,
-    daviplata: true,
-    wompi: true,
-    bold: true,
+    nequi: false,
+    daviplata: false,
+    wompi: false,
+    bold: false,
+    bancolombia: false,
     contraentrega: true
   });
 
@@ -132,15 +133,27 @@ export default function EditStoreModal({
           'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=200&auto=format&fit=crop'
       );
 
-      // Cargar configuraciones de pago
-      setNequiNumber(store.nequi_number || store.phone_whatsapp?.replace(/\D/g, '').slice(-10) || '');
-      setDaviplataNumber(store.daviplata_number || store.phone_whatsapp?.replace(/\D/g, '').slice(-10) || '');
-      setWompiLink(store.wompi_link || '');
-      setBoldLink(store.bold_link || '');
-      setBancolombiaAccount(store.bancolombia_account || '');
-      if (store.payment_methods) {
-        setPaymentMethods(store.payment_methods);
-      }
+      // Cargar configuraciones de pago respetando lo que realmente está configurado
+      const loadedNequi = store.nequi_number || '';
+      const loadedDaviplata = store.daviplata_number || '';
+      const loadedWompi = store.wompi_link || store.wompi_public_key || '';
+      const loadedBold = store.bold_link || '';
+      const loadedBancolombia = store.bancolombia_account || '';
+
+      setNequiNumber(loadedNequi);
+      setDaviplataNumber(loadedDaviplata);
+      setWompiLink(loadedWompi);
+      setBoldLink(loadedBold);
+      setBancolombiaAccount(loadedBancolombia);
+
+      setPaymentMethods({
+        nequi: Boolean(loadedNequi.trim()) && store.payment_methods?.nequi !== false,
+        daviplata: Boolean(loadedDaviplata.trim()) && store.payment_methods?.daviplata !== false,
+        wompi: Boolean(loadedWompi.trim()) && store.payment_methods?.wompi !== false,
+        bold: Boolean(loadedBold.trim()) && store.payment_methods?.bold !== false,
+        bancolombia: Boolean(loadedBancolombia.trim()) && store.payment_methods?.bancolombia !== false,
+        contraentrega: store.payment_methods?.contraentrega !== false
+      });
     }
   }, [store]);
 
@@ -187,6 +200,17 @@ export default function EditStoreModal({
 
     try {
       setSaving(true);
+
+      const effectivePaymentMethods = {
+        nequi: Boolean(paymentMethods.nequi && nequiNumber.trim()),
+        daviplata: Boolean(paymentMethods.daviplata && daviplataNumber.trim()),
+        wompi: Boolean(paymentMethods.wompi && wompiLink.trim()),
+        bold: Boolean(paymentMethods.bold && boldLink.trim()),
+        bancolombia: Boolean(paymentMethods.bancolombia && bancolombiaAccount.trim()),
+        contraentrega: Boolean(paymentMethods.contraentrega)
+      };
+
+      const cleanWompi = wompiLink.trim();
       const updatedData = {
         name,
         description,
@@ -195,12 +219,13 @@ export default function EditStoreModal({
         phone_whatsapp: phoneWhatsapp,
         banner_url: bannerUrl,
         logo_url: logoUrl,
-        nequi_number: nequiNumber,
-        daviplata_number: daviplataNumber,
-        wompi_link: wompiLink,
-        bold_link: boldLink,
-        bancolombia_account: bancolombiaAccount,
-        payment_methods: paymentMethods
+        nequi_number: nequiNumber.trim(),
+        daviplata_number: daviplataNumber.trim(),
+        wompi_link: cleanWompi,
+        wompi_public_key: cleanWompi.startsWith('pub_') ? cleanWompi : (store.wompi_public_key || ''),
+        bold_link: boldLink.trim(),
+        bancolombia_account: bancolombiaAccount.trim(),
+        payment_methods: effectivePaymentMethods
       };
 
       const res = await api.updateStore(store.id, updatedData);

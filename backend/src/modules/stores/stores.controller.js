@@ -361,6 +361,7 @@ export async function updateStore(req, res) {
     nequi_qr_url,
     daviplata_number,
     wompi_link,
+    wompi_public_key,
     bold_link,
     bancolombia_account,
     payment_methods
@@ -380,11 +381,12 @@ export async function updateStore(req, res) {
         nequi_qr_url = COALESCE($9, nequi_qr_url),
         daviplata_number = COALESCE($10, daviplata_number),
         wompi_link = COALESCE($11, wompi_link),
-        bold_link = COALESCE($12, bold_link),
-        bancolombia_account = COALESCE($13, bancolombia_account),
-        payment_methods = COALESCE($14, payment_methods),
+        wompi_public_key = COALESCE($12, wompi_public_key),
+        bold_link = COALESCE($13, bold_link),
+        bancolombia_account = COALESCE($14, bancolombia_account),
+        payment_methods = COALESCE($15, payment_methods),
         updated_at = CURRENT_TIMESTAMP
-       WHERE id = $15
+       WHERE id = $16
        RETURNING *`,
       [
         name,
@@ -398,6 +400,7 @@ export async function updateStore(req, res) {
         nequi_qr_url,
         daviplata_number,
         wompi_link,
+        wompi_public_key,
         bold_link,
         bancolombia_account,
         payment_methods ? JSON.stringify(payment_methods) : null,
@@ -420,6 +423,7 @@ export async function updateStore(req, res) {
         ...(nequi_qr_url !== undefined && { nequi_qr_url }),
         ...(daviplata_number !== undefined && { daviplata_number }),
         ...(wompi_link !== undefined && { wompi_link }),
+        ...(wompi_public_key !== undefined && { wompi_public_key }),
         ...(bold_link !== undefined && { bold_link }),
         ...(bancolombia_account !== undefined && { bancolombia_account }),
         ...(payment_methods !== undefined && { payment_methods })
@@ -454,6 +458,7 @@ export async function updateStore(req, res) {
         ...(nequi_qr_url !== undefined && { nequi_qr_url }),
         ...(daviplata_number !== undefined && { daviplata_number }),
         ...(wompi_link !== undefined && { wompi_link }),
+        ...(wompi_public_key !== undefined && { wompi_public_key }),
         ...(bold_link !== undefined && { bold_link }),
         ...(bancolombia_account !== undefined && { bancolombia_account }),
         ...(payment_methods !== undefined && { payment_methods })
