@@ -309,3 +309,4 @@ export default function Footer({ onOpenAuthModal, onOpenStorePortal }) {
     </footer>
   );
 }
+

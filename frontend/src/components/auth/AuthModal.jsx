@@ -155,7 +155,7 @@ export default function AuthModal({
               }`}
             >
               <Store className="w-4 h-4 text-blue-600" />
-              <span>Soy Comerciante (Tengo Local)</span>
+              <span>Soy Vendedor / Fabricante</span>
             </button>
           </div>
           <button
@@ -510,7 +510,7 @@ export default function AuthModal({
                     : 'text-gray-500 hover:text-gray-900'
                 }`}
               >
-                Registrar Nuevo Local ($120k/mes)
+                Registrar Tienda / Fabricante
               </button>
             </div>
 

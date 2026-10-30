@@ -131,14 +131,15 @@ export default function Header({
               </button>
             </div>
           ) : (
-            /* Estado Visitante (Botón para Registrar o Iniciar Sesión de Negocio) */
+            /* Estado Visitante (Botón Iniciar Sesión Vendedor) */
             <button
               onClick={() => onOpenAuthModal('merchant')}
-              className="hidden lg:flex items-center gap-1.5 text-xs font-black bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 px-3 py-1.5 rounded-full transition-all shadow-sm"
-              title="Registra tu negocio o entra a tu panel"
+              className="flex items-center gap-1.5 text-xs font-bold bg-white text-gray-800 border border-gray-300 hover:border-sanvi-orange hover:text-sanvi-orange hover:bg-orange-50/50 px-3 py-1.5 rounded-full transition-all shadow-xs"
+              title="Iniciar sesión como vendedor o fabricante"
             >
-              <Store className="w-3.5 h-3.5 text-sanvi-orange" />
-              <span>Tengo Local ($120k)</span>
+              <Store className="w-3.5 h-3.5 text-sanvi-orange shrink-0" />
+              <span className="hidden sm:inline">Iniciar Sesión Vendedor</span>
+              <span className="sm:hidden">Vendedor</span>
             </button>
           )}
 
