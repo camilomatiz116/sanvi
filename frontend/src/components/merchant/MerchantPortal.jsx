@@ -258,7 +258,7 @@ export default function MerchantPortal({
             </button>
 
             <button
-              onClick={onOpenEditStore}
+              onClick={() => onOpenEditStore('profile')}
               className="bg-gray-800 hover:bg-gray-700 text-yellow-400 border border-gray-700 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs"
               title="Cambiar la foto de portada (banner), el logo y los datos del local"
             >
@@ -320,7 +320,7 @@ export default function MerchantPortal({
               </div>
 
               <div className="flex items-center gap-2 text-[11px] font-bold mt-1 text-gray-500 flex-wrap">
-                <button onClick={onOpenEditStore} className="text-sanvi-orange hover:underline flex items-center gap-1">
+                <button onClick={() => onOpenEditStore('profile')} className="text-sanvi-orange hover:underline flex items-center gap-1">
                   <Edit className="w-3 h-3" />
                   <span>Personalizar Portada, Logo & Local</span>
                 </button>
@@ -460,7 +460,7 @@ export default function MerchantPortal({
             </div>
 
             <button
-              onClick={onOpenEditStore}
+              onClick={() => onOpenEditStore('payments')}
               className="bg-gray-900 hover:bg-black text-white text-xs font-black px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-xs"
             >
               <CreditCard className="w-3.5 h-3.5 text-yellow-400" />

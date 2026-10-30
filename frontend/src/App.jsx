@@ -90,6 +90,7 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCreateProductOpen, setIsCreateProductOpen] = useState(false);
   const [isEditStoreOpen, setIsEditStoreOpen] = useState(false);
+  const [editStoreMode, setEditStoreMode] = useState('profile'); // 'profile' | 'payments' | 'all'
 
   // Cargar tiendas y productos iniciales
   const loadInitialData = async () => {
@@ -450,7 +451,10 @@ export default function App() {
           products={products}
           onOpenCreateProduct={() => setIsCreateProductOpen(true)}
           onEditProduct={(prod) => setEditingProduct(prod)}
-          onOpenEditStore={() => setIsEditStoreOpen(true)}
+          onOpenEditStore={(mode = 'profile') => {
+            setEditStoreMode(mode);
+            setIsEditStoreOpen(true);
+          }}
           onViewPublicStore={(st) => handleViewStore(st)}
           onBackToMarketplace={() => setCurrentView('marketplace')}
           onDeleteProduct={handleDeleteProduct}
@@ -489,6 +493,7 @@ export default function App() {
         onClose={() => setIsEditStoreOpen(false)}
         store={loggedInStore}
         onStoreUpdated={handleStoreUpdated}
+        mode={editStoreMode}
       />
 
       {/* Modal: Reproductor de Video (TikTok o Shorts) */}

@@ -74,9 +74,20 @@ export default function EditStoreModal({
   onClose,
   store,
   onStoreUpdated,
-  initialTab = 'profile'
+  initialTab = 'profile',
+  mode = 'all' // 'all' | 'payments' | 'profile'
 }) {
-  const [activeTab, setActiveTab] = useState(initialTab); // 'profile' | 'payments'
+  const [activeTab, setActiveTab] = useState(mode === 'payments' ? 'payments' : (mode === 'profile' ? 'profile' : initialTab)); // 'profile' | 'payments'
+
+  useEffect(() => {
+    if (mode === 'payments') {
+      setActiveTab('payments');
+    } else if (mode === 'profile') {
+      setActiveTab('profile');
+    } else if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [mode, initialTab, isOpen]);
 
   // Datos de perfil
   const [name, setName] = useState('');
@@ -214,14 +225,22 @@ export default function EditStoreModal({
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/70">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-orange-100 text-sanvi-orange flex items-center justify-center">
-              <Store className="w-4 h-4" />
+              {mode === 'payments' ? <Wallet className="w-4 h-4 text-sanvi-orange" /> : <Store className="w-4 h-4" />}
             </div>
             <div>
               <h2 className="text-sm sm:text-base font-black text-gray-900">
-                Ajustes de Tienda & Pasarelas de Cobro
+                {mode === 'payments'
+                  ? 'Configurar Pasarelas de Pago de tu Local'
+                  : mode === 'profile'
+                  ? 'Personalizar Portada, Logo & Local'
+                  : 'Ajustes de Tienda & Pasarelas de Cobro'}
               </h2>
               <p className="text-[11px] text-gray-500 font-semibold">
-                Personaliza la imagen de tu local y configura tus cobros por Nequi, Wompi o Daviplata
+                {mode === 'payments'
+                  ? 'Configura tus cobros por Nequi, Wompi, Daviplata o Bold (0% comisiones Sanvi)'
+                  : mode === 'profile'
+                  ? 'Personaliza la foto de portada, el logo de tu marca y los datos físicos de tu local'
+                  : 'Personaliza la imagen de tu local y configura tus cobros por Nequi, Wompi o Daviplata'}
               </p>
             </div>
           </div>
@@ -233,37 +252,39 @@ export default function EditStoreModal({
           </button>
         </div>
 
-        {/* Pestañas de Navegación del Modal */}
-        <div className="flex border-b border-gray-200 bg-gray-50/50 px-5 pt-2 gap-4">
-          <button
-            type="button"
-            onClick={() => setActiveTab('profile')}
-            className={`pb-2.5 text-xs font-bold transition-all flex items-center gap-1.5 border-b-2 ${
-              activeTab === 'profile'
-                ? 'border-sanvi-orange text-sanvi-orange font-black'
-                : 'border-transparent text-gray-500 hover:text-gray-900'
-            }`}
-          >
-            <Store className="w-3.5 h-3.5" />
-            <span>Portada & Local</span>
-          </button>
+        {/* Pestañas de Navegación del Modal (Solo se muestran si mode === 'all') */}
+        {mode === 'all' && (
+          <div className="flex border-b border-gray-200 bg-gray-50/50 px-5 pt-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setActiveTab('profile')}
+              className={`pb-2.5 text-xs font-bold transition-all flex items-center gap-1.5 border-b-2 ${
+                activeTab === 'profile'
+                  ? 'border-sanvi-orange text-sanvi-orange font-black'
+                  : 'border-transparent text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              <Store className="w-3.5 h-3.5" />
+              <span>Portada & Local</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('payments')}
-            className={`pb-2.5 text-xs font-bold transition-all flex items-center gap-1.5 border-b-2 ${
-              activeTab === 'payments'
-                ? 'border-sanvi-orange text-sanvi-orange font-black'
-                : 'border-transparent text-gray-500 hover:text-gray-900'
-            }`}
-          >
-            <Wallet className="w-3.5 h-3.5 text-sanvi-orange" />
-            <span>Pasarelas Colombianas (Nequi, Wompi, Daviplata, Bold)</span>
-            <span className="bg-yellow-400 text-gray-950 text-[9px] font-black px-1.5 py-0.2 rounded-full">
-              Nuevo
-            </span>
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab('payments')}
+              className={`pb-2.5 text-xs font-bold transition-all flex items-center gap-1.5 border-b-2 ${
+                activeTab === 'payments'
+                  ? 'border-sanvi-orange text-sanvi-orange font-black'
+                  : 'border-transparent text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              <Wallet className="w-3.5 h-3.5 text-sanvi-orange" />
+              <span>Pasarelas Colombianas (Nequi, Wompi, Daviplata, Bold)</span>
+              <span className="bg-yellow-400 text-gray-950 text-[9px] font-black px-1.5 py-0.2 rounded-full">
+                Nuevo
+              </span>
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSave} className="p-4 sm:p-6 space-y-5 max-h-[80vh] overflow-y-auto">
           
