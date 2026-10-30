@@ -30,11 +30,18 @@ export default function App() {
   const [activeCenter, setActiveCenter] = useState('');
   const [activeTab, setActiveTab] = useState('home');
 
-  // Tienda autenticada y Tienda seleccionada para ver públicamente
-  const [loggedInStore, setLoggedInStore] = useState(null);
+  // Tienda autenticada (Comerciante con local en San Victorino)
+  const [loggedInStore, setLoggedInStore] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sanvi_store');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [activeStore, setActiveStore] = useState(null);
 
-  // Cliente autenticado (Estilo Temu)
+  // Cliente autenticado (Comprador estilo Temu)
   const [loggedInCustomer, setLoggedInCustomer] = useState(() => {
     try {
       const saved = localStorage.getItem('sanvi_customer');
@@ -43,6 +50,9 @@ export default function App() {
       return null;
     }
   });
+
+  // Modo del Modal de Login: 'customer' (Comprador) | 'merchant' (Comerciante)
+  const [authModalMode, setAuthModalMode] = useState('customer');
 
   // Carrito de compras
   const [cart, setCart] = useState([]);
@@ -66,11 +76,6 @@ export default function App() {
       ]);
       setStores(storesData);
       setProducts(productsData);
-
-      // Iniciar sesión por defecto con la primera tienda para que el usuario pueda explorar de inmediato
-      if (storesData.length > 0 && !loggedInStore) {
-        setLoggedInStore(storesData[0]);
-      }
     } catch (error) {
       console.error('Error cargando datos de Sanvi:', error);
     } finally {
@@ -236,10 +241,14 @@ export default function App() {
         }}
         loggedInStore={loggedInStore}
         loggedInCustomer={loggedInCustomer}
-        onOpenAuthModal={() => setIsAuthModalOpen(true)}
+        onOpenAuthModal={(initialMode = 'customer') => {
+          setAuthModalMode(initialMode);
+          setIsAuthModalOpen(true);
+        }}
         onOpenMerchantPortal={() => setCurrentView('portal')}
         onViewStore={(st) => handleViewStore(st)}
         onLogout={() => {
+          localStorage.removeItem('sanvi_store');
           setLoggedInStore(null);
           setCurrentView('marketplace');
         }}
@@ -379,16 +388,19 @@ export default function App() {
         onClearCart={() => setCart([])}
       />
 
-      {/* Modal: Login / Registro Temu Style (Clientes y Comerciantes) */}
+      {/* Modal: Login / Registro Temu Style (Clientes y Comerciantes separados) */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         stores={stores}
         loggedInCustomer={loggedInCustomer}
+        initialMode={authModalMode}
         onLoginCustomer={(cust) => {
+          localStorage.setItem('sanvi_customer', JSON.stringify(cust));
           setLoggedInCustomer(cust);
         }}
         onLoginSuccess={(store) => {
+          localStorage.setItem('sanvi_store', JSON.stringify(store));
           setLoggedInStore(store);
           setCurrentView('portal'); // Abre inmediatamente su panel de control
         }}

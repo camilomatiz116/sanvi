@@ -87,7 +87,7 @@ export default function Header({
           ) : (
             <button
               type="button"
-              onClick={onOpenAuthModal}
+              onClick={() => onOpenAuthModal('customer')}
               className="flex items-center gap-1.5 text-xs font-bold text-gray-800 hover:text-sanvi-orange bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-full transition-all"
               title="Iniciar sesión en Sanvi"
             >
@@ -133,7 +133,7 @@ export default function Header({
           ) : (
             /* Estado Visitante (Botón para Registrar o Iniciar Sesión de Negocio) */
             <button
-              onClick={onOpenAuthModal}
+              onClick={() => onOpenAuthModal('merchant')}
               className="hidden lg:flex items-center gap-1.5 text-xs font-black bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 px-3 py-1.5 rounded-full transition-all shadow-sm"
               title="Registra tu negocio o entra a tu panel"
             >

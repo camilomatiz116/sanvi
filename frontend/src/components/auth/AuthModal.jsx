@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Lock,
@@ -21,9 +21,17 @@ export default function AuthModal({
   stores = [],
   onLoginSuccess,
   onLoginCustomer,
-  loggedInCustomer
+  loggedInCustomer,
+  initialMode = 'customer'
 }) {
-  const [mode, setMode] = useState('customer'); // 'customer' | 'merchant'
+  const [mode, setMode] = useState(initialMode); // 'customer' | 'merchant'
+
+  useEffect(() => {
+    if (isOpen && initialMode) {
+      setMode(initialMode);
+    }
+  }, [isOpen, initialMode]);
+
   const [customerAuthMethod, setCustomerAuthMethod] = useState('main'); // 'main' | 'email_form' | 'phone_form'
   const [emailInput, setEmailInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
@@ -122,18 +130,45 @@ export default function AuthModal({
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
       <div className="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 border border-gray-100 my-auto">
         
-        {/* BOTÓN CERRAR */}
-        <div className="relative pt-3 pr-4 flex justify-end">
+        {/* CABECERA CON SELECTOR DE ROL Y BOTÓN CERRAR */}
+        <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50">
+          <div className="grid grid-cols-2 flex-1 text-xs font-bold text-center">
+            <button
+              type="button"
+              onClick={() => setMode('customer')}
+              className={`py-3 px-3 transition-all flex items-center justify-center gap-1.5 ${
+                mode === 'customer'
+                  ? 'bg-white text-sanvi-orange border-b-2 border-sanvi-orange font-black'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              <User className="w-4 h-4 text-sanvi-orange" />
+              <span>Soy Comprador</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('merchant')}
+              className={`py-3 px-3 transition-all flex items-center justify-center gap-1.5 ${
+                mode === 'merchant'
+                  ? 'bg-white text-blue-600 border-b-2 border-blue-600 font-black'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              <Store className="w-4 h-4 text-blue-600" />
+              <span>Soy Comerciante (Tengo Local)</span>
+            </button>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+            className="text-gray-400 hover:text-gray-700 p-2.5 mr-1 rounded-full hover:bg-gray-100 transition-colors"
+            title="Cerrar ventana"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* CABECERA TEMU: TÍTULO + CANDADO VERDE */}
-        <div className="text-center px-4 -mt-2">
+        <div className="text-center px-4 pt-4">
           <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
             {mode === 'customer' ? 'Iniciar sesión' : 'Portal de Comerciantes San Victorino'}
           </h2>
