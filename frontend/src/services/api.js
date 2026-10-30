@@ -134,6 +134,26 @@ export const api = {
       body: JSON.stringify(data)
     });
     return res.json();
+  },
+
+  // Pedidos y Compras Directas en Plataforma (Estilo Temu)
+  async createOrder(orderData) {
+    const res = await fetch(`${API_BASE}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    });
+    return res.json();
+  },
+
+  async getOrderById(id) {
+    const res = await fetch(`${API_BASE}/orders/${id}`);
+    return res.json();
+  },
+
+  async getStoreOrders(storeId) {
+    const res = await fetch(`${API_BASE}/orders/store/${storeId}`);
+    return res.json();
   }
 };
 

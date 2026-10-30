@@ -422,6 +422,7 @@ export default function App() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onClearCart={() => setCart([])}
+        loggedInCustomer={loggedInCustomer}
       />
 
       {/* Modal: Login / Registro Temu Style (Clientes y Comerciantes separados) */}

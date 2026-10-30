@@ -8,6 +8,7 @@ import productsRouter from './modules/products/products.routes.js';
 import membershipsRouter from './modules/memberships/memberships.routes.js';
 import mediaRouter from './modules/media/media.routes.js';
 import metricsRouter from './modules/metrics/metrics.routes.js';
+import ordersRouter from './modules/orders/orders.routes.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/api/products', productsRouter);
 app.use('/api/memberships', membershipsRouter);
 app.use('/api/media', mediaRouter);
 app.use('/api/metrics', metricsRouter);
+app.use('/api/orders', ordersRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
