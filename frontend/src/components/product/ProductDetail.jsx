@@ -71,13 +71,16 @@ export default function ProductDetail({
   // Votos de utilidad
   const [helpfulVotes, setHelpfulVotes] = useState({});
 
-  // Estados de Zoom / Lightbox Responsivo
+  // Estados de Zoom / Lightbox Responsivo (Sin scrollbars)
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
 
-  // Navegación con teclado en el zoom (Esc para salir, Flechas para navegar)
+  // Control de scroll del body y atajos de teclado
   useEffect(() => {
     if (!isZoomOpen) return;
+    document.body.style.overflow = 'hidden';
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setIsZoomOpen(false);
@@ -90,13 +93,26 @@ export default function ProductDetail({
         setZoomLevel(1);
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isZoomOpen, images.length]);
+
+  const handleMouseMoveZoom = (e) => {
+    if (zoomLevel <= 1) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomOrigin({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
+  };
 
   const handleOpenZoom = (index = null) => {
     if (index !== null) setSelectedImageIndex(index);
     setZoomLevel(1);
+    setZoomOrigin({ x: 50, y: 50 });
     setIsZoomOpen(true);
   };
 
@@ -1079,11 +1095,17 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
             </div>
           </div>
 
-          {/* Área Principal de la Imagen con Zoom */}
+          {/* Área Principal de la Imagen con Zoom (100% Libre de Scrollbars) */}
           <div
-            onClick={() => setZoomLevel((prev) => (prev === 1 ? 2 : 1))}
-            className="flex-1 flex items-center justify-center relative overflow-hidden my-2 sm:my-3 cursor-zoom-in"
-            title="Haz clic para alternar zoom (100% - 200%)"
+            onClick={() => {
+              setZoomLevel((prev) => (prev === 1 ? 2.2 : 1));
+              setZoomOrigin({ x: 50, y: 50 });
+            }}
+            onMouseMove={handleMouseMoveZoom}
+            className={`flex-1 flex items-center justify-center relative overflow-hidden my-2 sm:my-3 select-none ${
+              zoomLevel > 1 ? 'cursor-move' : 'cursor-zoom-in'
+            }`}
+            title={zoomLevel > 1 ? 'Mueve el ratón para explorar detalles • Clic para reducir' : 'Haz clic para ampliar'}
           >
             {/* Botón Flecha Izquierda */}
             {images.length > 1 && (
@@ -1093,6 +1115,7 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
                   e.stopPropagation();
                   setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
                   setZoomLevel(1);
+                  setZoomOrigin({ x: 50, y: 50 });
                 }}
                 className="absolute left-2 sm:left-6 z-30 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 backdrop-blur-sm transition-all active:scale-95 shadow-2xl"
                 title="Foto anterior"
@@ -1101,16 +1124,17 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
               </button>
             )}
 
-            {/* Imagen Principal Escalada y Centrada */}
-            <div className="relative max-w-full max-h-[75vh] flex items-center justify-center overflow-auto scrollbar-none">
+            {/* Imagen Principal Escalada y Centrada (Sin scrollbars) */}
+            <div className="relative max-w-full max-h-[76vh] flex items-center justify-center overflow-hidden pointer-events-none">
               <img
                 src={images[selectedImageIndex]}
                 alt={product.title}
                 style={{
                   transform: `scale(${zoomLevel})`,
-                  transition: 'transform 0.2s cubic-bezier(0.2, 0, 0, 1)'
+                  transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                  transition: zoomLevel === 1 ? 'transform 0.2s ease-out' : 'transform 0.1s ease-out, transform-origin 0.04s ease-out'
                 }}
-                className="max-h-[72vh] sm:max-h-[76vh] max-w-full w-auto object-contain rounded-xl shadow-2xl transition-transform"
+                className="max-h-[72vh] sm:max-h-[76vh] max-w-full w-auto object-contain rounded-xl shadow-2xl"
                 draggable={false}
               />
             </div>
@@ -1123,6 +1147,7 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
                   e.stopPropagation();
                   setSelectedImageIndex((prev) => (prev + 1) % images.length);
                   setZoomLevel(1);
+                  setZoomOrigin({ x: 50, y: 50 });
                 }}
                 className="absolute right-2 sm:right-6 z-30 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 backdrop-blur-sm transition-all active:scale-95 shadow-2xl"
                 title="Foto siguiente"
