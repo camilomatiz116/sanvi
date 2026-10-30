@@ -20,7 +20,11 @@ import {
   User,
   Award,
   AlertCircle,
-  Zap
+  Zap,
+  ZoomIn,
+  ZoomOut,
+  ChevronLeft,
+  X
 } from 'lucide-react';
 import { isApparelOrFootwearCategory } from '../../utils/categoryHelper';
 import { api } from '../../services/api';
@@ -66,6 +70,35 @@ export default function ProductDetail({
 
   // Votos de utilidad
   const [helpfulVotes, setHelpfulVotes] = useState({});
+
+  // Estados de Zoom / Lightbox Responsivo
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  // Navegación con teclado en el zoom (Esc para salir, Flechas para navegar)
+  useEffect(() => {
+    if (!isZoomOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsZoomOpen(false);
+        setZoomLevel(1);
+      } else if (e.key === 'ArrowRight') {
+        setSelectedImageIndex((prev) => (prev + 1) % images.length);
+        setZoomLevel(1);
+      } else if (e.key === 'ArrowLeft') {
+        setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+        setZoomLevel(1);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isZoomOpen, images.length]);
+
+  const handleOpenZoom = (index = null) => {
+    if (index !== null) setSelectedImageIndex(index);
+    setZoomLevel(1);
+    setIsZoomOpen(true);
+  };
 
   useEffect(() => {
     if (product.variants?.sizes && product.variants.sizes.length > 0) {
@@ -253,12 +286,16 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white rounded-2xl p-4 sm:p-6 border border-gray-200 shadow-sm">
           {/* COLUMNA 1: GALERÍA DE FOTOS MULTI-IMAGEN + VIDEO (5 columnas) */}
           <div className="lg:col-span-5 space-y-3">
-            {/* Foto Principal Ampliada */}
-            <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm">
+            {/* Foto Principal Ampliada (Clic para Zoom Pantalla Completa) */}
+            <div
+              onClick={() => handleOpenZoom(selectedImageIndex)}
+              className="relative aspect-square w-full rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm cursor-zoom-in group"
+              title="Haz clic para ver la imagen en alta definición y con zoom"
+            >
               <img
                 src={images[selectedImageIndex] || images[0]}
                 alt={product.title}
-                className="w-full h-full object-cover object-center transition-all duration-300"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-300"
               />
 
               {/* Badge de Descuento Temu */}
@@ -276,11 +313,21 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
                 </div>
               )}
 
+              {/* Indicador de Zoom */}
+              <div className="absolute bottom-3 right-3 bg-black/70 group-hover:bg-black/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-md shadow-md transition-all">
+                <ZoomIn className="w-3.5 h-3.5 text-white" />
+                <span>Zoom</span>
+              </div>
+
               {/* Botón flotante para ver el video de TikTok / Shorts */}
               {product.video_url && (
                 <button
-                  onClick={() => onOpenVideo(product)}
-                  className="absolute bottom-3 left-3 bg-black/80 hover:bg-black text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 backdrop-blur-md shadow-lg active:scale-95 transition-all"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenVideo(product);
+                  }}
+                  className="absolute bottom-3 left-3 bg-black/80 hover:bg-black text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 backdrop-blur-md shadow-lg active:scale-95 transition-all z-10"
                 >
                   <Play className="w-3.5 h-3.5 text-red-500 fill-red-500" />
                   <span>Ver Video Modelado</span>
@@ -965,6 +1012,150 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
         </div>
 
       </div>
+
+      {/* ============================================================== */}
+      {/* MODAL LIGHTBOX / ZOOM DE ALTA RESOLUCIÓN RESPONSIVO            */}
+      {/* ============================================================== */}
+      {isZoomOpen && (
+        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-3 sm:p-5 animate-in fade-in duration-200 select-none">
+          {/* Barra Superior de Control */}
+          <div className="flex items-center justify-between text-white z-20 gap-3 border-b border-white/10 pb-3">
+            <div className="min-w-0">
+              <span className="text-xs sm:text-sm font-bold text-gray-200">
+                Foto {selectedImageIndex + 1} de {images.length}
+              </span>
+              <p className="text-[11px] sm:text-xs text-gray-400 truncate max-w-xs sm:max-w-md hidden sm:block">
+                {product.title}
+              </p>
+            </div>
+
+            {/* Controles de Zoom y Cerrar */}
+            <div className="flex items-center gap-2">
+              <div className="bg-white/10 rounded-xl p-1 flex items-center gap-1 border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setZoomLevel((prev) => Math.max(1, +(prev - 0.5).toFixed(1)))}
+                  className="p-1.5 hover:bg-white/20 rounded-lg text-white transition-colors"
+                  title="Alejar (-)"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <span className="text-xs font-mono font-bold px-1.5 min-w-[42px] text-center">
+                  {Math.round(zoomLevel * 100)}%
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setZoomLevel((prev) => Math.min(3, +(prev + 0.5).toFixed(1)))}
+                  className="p-1.5 hover:bg-white/20 rounded-lg text-white transition-colors"
+                  title="Acercar (+)"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                {zoomLevel > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setZoomLevel(1)}
+                    className="p-1.5 hover:bg-white/20 rounded-lg text-white text-[10px] font-bold transition-colors ml-0.5"
+                    title="Restablecer tamaño normal"
+                  >
+                    100%
+                  </button>
+                )}
+              </div>
+
+              {/* Botón Cerrar */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsZoomOpen(false);
+                  setZoomLevel(1);
+                }}
+                className="p-2 sm:px-3 rounded-xl bg-white/15 hover:bg-white/30 text-white transition-colors flex items-center gap-1 text-xs font-bold"
+                title="Cerrar (Esc)"
+              >
+                <X className="w-5 h-5" />
+                <span className="hidden sm:inline">Cerrar</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Área Principal de la Imagen con Zoom */}
+          <div
+            onClick={() => setZoomLevel((prev) => (prev === 1 ? 2 : 1))}
+            className="flex-1 flex items-center justify-center relative overflow-hidden my-2 sm:my-3 cursor-zoom-in"
+            title="Haz clic para alternar zoom (100% - 200%)"
+          >
+            {/* Botón Flecha Izquierda */}
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+                  setZoomLevel(1);
+                }}
+                className="absolute left-2 sm:left-6 z-30 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 backdrop-blur-sm transition-all active:scale-95 shadow-2xl"
+                title="Foto anterior"
+              >
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+            )}
+
+            {/* Imagen Principal Escalada y Centrada */}
+            <div className="relative max-w-full max-h-[75vh] flex items-center justify-center overflow-auto scrollbar-none">
+              <img
+                src={images[selectedImageIndex]}
+                alt={product.title}
+                style={{
+                  transform: `scale(${zoomLevel})`,
+                  transition: 'transform 0.2s cubic-bezier(0.2, 0, 0, 1)'
+                }}
+                className="max-h-[72vh] sm:max-h-[76vh] max-w-full w-auto object-contain rounded-xl shadow-2xl transition-transform"
+                draggable={false}
+              />
+            </div>
+
+            {/* Botón Flecha Derecha */}
+            {images.length > 1 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImageIndex((prev) => (prev + 1) % images.length);
+                  setZoomLevel(1);
+                }}
+                className="absolute right-2 sm:right-6 z-30 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 text-white border border-white/20 backdrop-blur-sm transition-all active:scale-95 shadow-2xl"
+                title="Foto siguiente"
+              >
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+            )}
+          </div>
+
+          {/* Carrusel de Miniaturas Inferior */}
+          {images.length > 1 && (
+            <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 z-20 no-scrollbar">
+              {images.map((imgUrl, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setSelectedImageIndex(idx);
+                    setZoomLevel(1);
+                  }}
+                  className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl overflow-hidden shrink-0 border-2 transition-all ${
+                    selectedImageIndex === idx
+                      ? 'border-sanvi-orange ring-2 ring-orange-400 scale-105 opacity-100'
+                      : 'border-white/30 opacity-50 hover:opacity-100 hover:border-white/60'
+                  }`}
+                >
+                  <img src={imgUrl} alt={`Miniatura ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
