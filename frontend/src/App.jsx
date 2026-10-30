@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { ChevronDown } from 'lucide-react';
 import Header from './components/temu/Header';
 import FlashDealsBanner from './components/temu/FlashDealsBanner';
 import CategoryPills from './components/temu/CategoryPills';
 import ProductCard from './components/temu/ProductCard';
 import VideoModal from './components/temu/VideoModal';
 import BottomNav from './components/temu/BottomNav';
+import Footer from './components/temu/Footer';
 import CreateProductModal from './components/merchant/CreateProductModal';
 import EditProductModal from './components/merchant/EditProductModal';
 import MerchantPortal from './components/merchant/MerchantPortal';
@@ -309,6 +311,22 @@ export default function App() {
               ))}
             </div>
           )}
+
+          {/* Botón Ver Más Estilo Temu */}
+          {products.length > 0 && (
+            <div className="flex justify-center pt-8 pb-4">
+              <button
+                type="button"
+                onClick={() => {
+                  window.scrollTo({ top: 350, behavior: 'smooth' });
+                }}
+                className="bg-[#fb5805] hover:bg-[#e04e04] text-white font-extrabold px-14 py-3 rounded-full text-sm shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center gap-2"
+              >
+                <span>Ver más</span>
+                <ChevronDown className="w-4 h-4 stroke-[3]" />
+              </button>
+            </div>
+          )}
         </main>
       )}
 
@@ -351,6 +369,24 @@ export default function App() {
           onViewPublicStore={(st) => handleViewStore(st)}
           onBackToMarketplace={() => setCurrentView('marketplace')}
           onDeleteProduct={handleDeleteProduct}
+        />
+      )}
+
+      {/* Footer Estilo Temu Adaptado a SANVI */}
+      {currentView !== 'portal' && (
+        <Footer
+          onOpenAuthModal={() => {
+            setAuthModalMode('customer');
+            setIsAuthModalOpen(true);
+          }}
+          onOpenStorePortal={() => {
+            if (loggedInStore) {
+              setCurrentView('portal');
+            } else {
+              setAuthModalMode('store');
+              setIsAuthModalOpen(true);
+            }
+          }}
         />
       )}
 
