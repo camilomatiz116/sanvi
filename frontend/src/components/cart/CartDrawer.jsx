@@ -76,6 +76,18 @@ export default function CartDrawer({
 
   const primaryStoreWompiLink = items[0]?.wompi_link;
 
+  const getWompiCheckoutUrl = () => {
+    if (!primaryStoreWompiLink) return null;
+    const trimmed = primaryStoreWompiLink.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    // Si es llave pública (pub_prod_... o pub_test_...)
+    const cents = Math.round(grandTotal * 100);
+    const ref = `SANVI-${Date.now()}`;
+    return `https://checkout.wompi.co/p/?public-key=${encodeURIComponent(trimmed)}&currency=COP&amount-in-cents=${cents}&reference=${ref}`;
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
       <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
@@ -269,9 +281,9 @@ export default function CartDrawer({
             </div>
 
             {/* Botón Wompi Directo si está seleccionado y configurado */}
-            {paymentMethod === 'wompi' && primaryStoreWompiLink && (
+            {paymentMethod === 'wompi' && getWompiCheckoutUrl() && (
               <a
-                href={primaryStoreWompiLink}
+                href={getWompiCheckoutUrl()}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full bg-[#00109b] hover:bg-blue-900 text-white font-black py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm text-xs transition-all active:scale-95"

@@ -517,20 +517,27 @@ export default function EditStoreModal({
                 </div>
 
                 {paymentMethods.wompi && (
-                  <div>
-                    <label className="block text-[11px] font-bold text-gray-700 mb-1">
-                      Enlace de pago de Wompi (Link de cobro de tu local)
-                    </label>
-                    <input
-                      type="url"
-                      value={wompiLink}
-                      onChange={(e) => setWompiLink(e.target.value)}
-                      placeholder="https://checkout.wompi.co/l/tu-negocio"
-                      className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-xs font-mono outline-none focus:border-sanvi-orange"
-                    />
-                    <p className="text-[10px] text-gray-400 mt-1">
-                      Copia el link de cobro desde tu panel de comercio en Wompi Bancolombia.
-                    </p>
+                  <div className="space-y-2">
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 mb-1">
+                        Llave Pública de Wompi (pub_prod_... o pub_test_...) o Link de Cobro
+                      </label>
+                      <input
+                        type="text"
+                        value={wompiLink}
+                        onChange={(e) => setWompiLink(e.target.value)}
+                        placeholder="ej: pub_prod_JYYBeo1o69CqL00LjuL29cGL9fl0DOVx o https://checkout.wompi.co/l/..."
+                        className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-xs font-mono outline-none focus:border-sanvi-orange font-bold text-blue-900"
+                      />
+                    </div>
+                    <div className="bg-blue-50/80 border border-blue-200 rounded-lg p-2.5 text-[11px] text-blue-950 leading-snug">
+                      <p className="font-extrabold flex items-center gap-1 text-blue-900">
+                        <span>💡 ¿De dónde sacas este dato en tu Wompi?</span>
+                      </p>
+                      <p className="mt-1 text-gray-600">
+                        En tu pantalla de Wompi ve a <strong>Desarrollo &gt; Programadores</strong> y copia la <strong>Llave pública</strong> (la que empieza por <code>pub_prod_...</code> tal como se ve en tu captura), o ve a <strong>Recibir pagos &gt; Links de cobro</strong> y pega el link. ¡Cualquiera de los dos funciona de inmediato!
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
