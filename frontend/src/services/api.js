@@ -154,6 +154,15 @@ export const api = {
   async getStoreOrders(storeId) {
     const res = await fetch(`${API_BASE}/orders/store/${storeId}`);
     return res.json();
+  },
+
+  async updateOrderStatus(orderId, updateData) {
+    const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updateData)
+    });
+    return res.json();
   }
 };
 

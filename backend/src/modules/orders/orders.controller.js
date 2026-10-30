@@ -162,9 +162,56 @@ export async function getStoreOrders(req, res) {
       `SELECT * FROM orders WHERE store_id = $1 ORDER BY created_at DESC`,
       [storeId]
     );
-    return res.json(orderRes.rows);
+
+    const orders = orderRes.rows;
+
+    // Adjuntar items a cada orden
+    for (const order of orders) {
+      const itemsRes = await query(
+        `SELECT oi.*, p.images FROM order_items oi
+         LEFT JOIN products p ON oi.product_id = p.id
+         WHERE oi.order_id = $1`,
+        [order.id]
+      );
+      order.items = itemsRes.rows;
+    }
+
+    return res.json(orders);
   } catch (err) {
-    return res.json(IN_MEMORY_ORDERS.filter(o => o.store_id === storeId));
+    const memoryMatches = IN_MEMORY_ORDERS.filter(o => o.store_id === storeId);
+    return res.json(memoryMatches);
   }
 }
 
+export async function updateOrderStatus(req, res) {
+  const { id } = req.params;
+  const { status, tracking_number, courier_name } = req.body;
+
+  try {
+    const updateRes = await query(
+      `UPDATE orders 
+       SET status = COALESCE($1, status),
+           tracking_number = COALESCE($2, tracking_number),
+           courier_name = COALESCE($3, courier_name),
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = $4 OR order_number = $4
+       RETURNING *`,
+      [status, tracking_number, courier_name, id]
+    );
+
+    if (updateRes.rows.length === 0) {
+      const memOrder = IN_MEMORY_ORDERS.find(o => o.id === id || o.order_number === id);
+      if (memOrder) {
+        if (status) memOrder.status = status;
+        if (tracking_number) memOrder.tracking_number = tracking_number;
+        if (courier_name) memOrder.courier_name = courier_name;
+        return res.json(memOrder);
+      }
+      return res.status(404).json({ error: 'Orden no encontrada' });
+    }
+
+    return res.json(updateRes.rows[0]);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+}
