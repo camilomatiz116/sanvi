@@ -167,3 +167,4 @@ export async function getStoreOrders(req, res) {
     return res.json(IN_MEMORY_ORDERS.filter(o => o.store_id === storeId));
   }
 }
+

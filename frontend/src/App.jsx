@@ -15,6 +15,7 @@ import StoreFront from './components/store/StoreFront';
 import ProductDetail from './components/product/ProductDetail';
 import AuthModal from './components/auth/AuthModal';
 import CartDrawer from './components/cart/CartDrawer';
+import CheckoutModal from './components/cart/CheckoutModal';
 import { api } from './services/api';
 
 export default function App() {
@@ -56,9 +57,25 @@ export default function App() {
   // Modo del Modal de Login: 'customer' (Comprador) | 'merchant' (Comerciante)
   const [authModalMode, setAuthModalMode] = useState('customer');
 
-  // Carrito de compras
-  const [cart, setCart] = useState([]);
+  // Carrito de compras persistente en localStorage
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sanvi_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [checkoutItems, setCheckoutItems] = useState([]);
+
+  // Sincronizar carrito en localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('sanvi_cart', JSON.stringify(cart));
+    } catch {}
+  }, [cart]);
 
   // Modales y selección
   const [selectedVideoProduct, setSelectedVideoProduct] = useState(null);
@@ -113,18 +130,49 @@ export default function App() {
     }
   }, [activeCategory, activeCenter, searchTerm, currentView]);
 
-  // Manejo de Carrito
-  const handleAddToCart = (product) => {
+  // Manejo de Carrito robusto con cantidades reales
+  const handleAddToCart = (product, openDrawer = true) => {
+    if (!product) return;
+    const qtyToAdd = Number(product.quantity) || 1;
+
     setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+      const existingIndex = prev.findIndex((item) => item.id === product.id);
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          ...product,
+          quantity: (updated[existingIndex].quantity || 1) + qtyToAdd
+        };
+        return updated;
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity: qtyToAdd }];
     });
-    setIsCartOpen(true);
+
+    if (openDrawer) {
+      setIsCartOpen(true);
+    }
+  };
+
+  // Compra directa en plataforma (Botón Comprar Ahora)
+  const handleBuyNowDirect = (product) => {
+    if (!product) return;
+    const qty = Number(product.quantity) || 1;
+    const unitPrice = Number(product.price_retail || product.unitPrice) || 0;
+    const itemToBuy = {
+      ...product,
+      quantity: qty,
+      unitPrice,
+      total: unitPrice * qty
+    };
+
+    // Agregar al carrito silenciosamente de respaldo
+    handleAddToCart(itemToBuy, false);
+
+    // Abrir de inmediato el CheckoutModal profesional con el producto seleccionado
+    setCheckoutItems([itemToBuy]);
+    setIsCartOpen(false);
+    setIsCheckoutModalOpen(true);
   };
 
   const handleUpdateQuantity = (productId, newQty) => {
@@ -351,6 +399,7 @@ export default function App() {
           product={selectedProduct}
           onBack={() => setCurrentView('marketplace')}
           onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNowDirect}
           onOpenVideo={(prod) => setSelectedVideoProduct(prod)}
           onViewStore={(stId) => handleViewStore(stId)}
           loggedInCustomer={loggedInCustomer}
@@ -423,6 +472,23 @@ export default function App() {
         onRemoveItem={handleRemoveItem}
         onClearCart={() => setCart([])}
         loggedInCustomer={loggedInCustomer}
+        onProceedToCheckout={(itemsToBuy) => {
+          setIsCartOpen(false);
+          setCheckoutItems(itemsToBuy);
+          setIsCheckoutModalOpen(true);
+        }}
+      />
+
+      {/* Modal de Checkout Directo en Plataforma (Global) */}
+      <CheckoutModal
+        isOpen={isCheckoutModalOpen}
+        onClose={() => setIsCheckoutModalOpen(false)}
+        items={checkoutItems}
+        totalAmount={checkoutItems.reduce((acc, curr) => acc + (curr.total || (curr.unitPrice || curr.price_retail) * curr.quantity), 0)}
+        loggedInCustomer={loggedInCustomer}
+        onOrderSuccess={(order) => {
+          setCart((prev) => prev.filter((p) => !checkoutItems.some((ci) => ci.id === p.id)));
+        }}
       />
 
       {/* Modal: Login / Registro Temu Style (Clientes y Comerciantes separados) */}

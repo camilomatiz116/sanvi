@@ -17,16 +17,19 @@ import { api } from '../../services/api';
 export default function CartDrawer({
   isOpen,
   onClose,
-  items,
+  items = [],
   onUpdateQuantity,
   onRemoveItem,
   onClearCart,
-  loggedInCustomer
+  loggedInCustomer,
+  onProceedToCheckout
 }) {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('wompi'); // 'wompi' | 'nequi' | 'daviplata' | 'contraentrega'
 
   if (!isOpen) return null;
+
+  const safeItems = Array.isArray(items) ? items : [];
 
   const formatCOP = (val) => {
     return new Intl.NumberFormat('es-CO', {
@@ -37,18 +40,18 @@ export default function CartDrawer({
   };
 
   // Calcular totales teniendo en cuenta mayoreo por prenda
-  const calculatedItems = items.map((item) => {
+  const calculatedItems = safeItems.map((item) => {
     const isWholesale = item.quantity >= (item.min_wholesale_qty || 6);
-    const unitPrice = isWholesale ? Number(item.price_wholesale) : Number(item.price_retail);
+    const unitPrice = isWholesale ? Number(item.price_wholesale) : Number(item.price_retail || item.unitPrice || 0);
     return {
       ...item,
       isWholesale,
       unitPrice,
-      total: unitPrice * item.quantity
+      total: unitPrice * (item.quantity || 1)
     };
   });
 
-  const grandTotal = calculatedItems.reduce((acc, curr) => acc + curr.total, 0);
+  const grandTotal = calculatedItems.reduce((acc, curr) => acc + (curr.total || 0), 0);
 
   const paymentLabels = {
     wompi: '🔵 Wompi Bancolombia (Tarjetas y Botón Bancolombia)',
@@ -99,12 +102,12 @@ export default function CartDrawer({
               <ShoppingBag className="w-5 h-5 text-sanvi-orange" />
               <h3 className="font-black text-sm sm:text-base">Mi Carrito Sanvi</h3>
               <span className="bg-sanvi-orange text-white text-xs font-black px-2 py-0.5 rounded-full">
-                {items.reduce((s, i) => s + i.quantity, 0)} uds
+                {safeItems.reduce((s, i) => s + (i.quantity || 1), 0)} uds
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              {items.length > 0 && (
+              {safeItems.length > 0 && (
                 <button
                   onClick={onClearCart}
                   className="text-xs text-gray-400 hover:text-white transition-colors"
@@ -123,7 +126,7 @@ export default function CartDrawer({
 
           {/* Lista de Productos en el Carrito */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {items.length === 0 ? (
+            {safeItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-2 p-6">
                 <div className="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center text-sanvi-orange mb-2">
                   <ShoppingBag className="w-8 h-8" />
@@ -191,7 +194,7 @@ export default function CartDrawer({
           </div>
 
           {/* Footer con Total y DOS OPCIONES DE COMPRA (PLATAFORMA DIRECTA vs WHATSAPP) */}
-          {items.length > 0 && (
+          {safeItems.length > 0 && (
             <div className="p-4 bg-gray-50 border-t border-gray-200 space-y-3">
               
               {/* Selector de Medio de Pago Preferido */}
@@ -287,7 +290,13 @@ export default function CartDrawer({
                 {/* 1. BOTÓN PRINCIPAL: COMPRAR DIRECTO EN PLATAFORMA */}
                 <button
                   type="button"
-                  onClick={() => setIsCheckoutModalOpen(true)}
+                  onClick={() => {
+                    if (onProceedToCheckout) {
+                      onProceedToCheckout(calculatedItems);
+                    } else {
+                      setIsCheckoutModalOpen(true);
+                    }
+                  }}
                   className="w-full bg-gradient-to-r from-sanvi-red to-[#FA2C19] hover:from-red-600 hover:to-orange-600 text-white font-black py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer tracking-wide"
                 >
                   <Zap className="w-5 h-5 fill-white text-white animate-pulse" />

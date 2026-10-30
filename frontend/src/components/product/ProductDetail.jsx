@@ -33,6 +33,7 @@ export default function ProductDetail({
   product,
   onBack,
   onAddToCart,
+  onBuyNow,
   onOpenVideo,
   onViewStore,
   loggedInCustomer,
@@ -196,23 +197,33 @@ ${isCouponApplied ? `🎟️ Cupón de Descuento: -10% Aplicado (-${formatCOP(di
   };
 
   const handleAddCartItem = () => {
-    onAddToCart({
-      ...product,
-      selectedSize,
-      selectedColor,
-      quantity
-    });
+    if (onAddToCart) {
+      onAddToCart({
+        ...product,
+        selectedSize,
+        selectedColor,
+        quantity,
+        price_retail: activeUnitPrice,
+        isWholesale: isWholesaleActive
+      });
+    }
   };
 
   const handleBuyNow = () => {
-    onAddToCart({
+    const buyItem = {
       ...product,
       selectedSize,
       selectedColor,
       quantity,
       price_retail: activeUnitPrice,
       isWholesale: isWholesaleActive
-    });
+    };
+
+    if (onBuyNow) {
+      onBuyNow(buyItem);
+    } else if (onAddToCart) {
+      onAddToCart(buyItem);
+    }
   };
 
   // Manejar el envío de reseña de compra
