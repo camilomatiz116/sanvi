@@ -1,0 +1,10 @@
+{
+  "name": "sanvi-ecosystem",
+  "version": "1.0.0",
+  "description": "SANVI - El Temu Colombiano de San Victorino (Bogotá)",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  }
+}
+
